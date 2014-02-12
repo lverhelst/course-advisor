@@ -1,0 +1,14 @@
+100!Computer Programming I!!101,230!1
+101!Computer Programming II!101,141!200,222!2
+141!Discrete Computational Mathematics!!242,200,230!1
+200!Algorithm Analysis and Development!101,141!281,320!3
+222!Introduction to Concurrent and Distributed Programming!101!!3
+230!Introduction to Logic Design!100,141!231!3
+231!Computer Organization and Architecture!230!!4
+242!Mathematical Topics for Computer Science!141!320,340!2
+260!Ethics in Computer Science!!!1
+281!Data Structures I!200!300!4
+300!Software Engineering I!281!!5
+320!Programming Languages!200,242!!5
+340!Theory of Computation!242!!5
+344!Data Communications and Networking!!!3
