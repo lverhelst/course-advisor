@@ -7,9 +7,8 @@ import java.util.ArrayList;
  */
 public class Course {
     //List of Course numbers that are prerequisites of this course
-    private ArrayList<Integer> prereqs = new  ArrayList<Integer>();
-    //List of Course numbers this Course is a prerequisite of
-    private ArrayList<Integer>prereqOf = new  ArrayList<Integer>();
+    private ArrayList<String> prereqs = new  ArrayList<String>();
+
     //Number of the Course
     private final int num;
     //Name of the Course
@@ -28,11 +27,10 @@ public class Course {
      * @param pre Prerequisite courses
      * @param post Courses that this course is a prerequisite for
      */
-    Course(int number, String cname, ArrayList<Integer> pre, ArrayList<Integer> post){
+    Course(int number, String cname, ArrayList<String> pre){
         this.num = number;
         this.name = cname;
         this.prereqs = pre;
-        this.prereqOf = post;
     }
     
     /**
@@ -46,41 +44,22 @@ public class Course {
     /**
      * @param prereqs the prereqs to set
      */
-    public void setPrereqs(ArrayList<Integer> prereqs) {
+    public void setPrereqs(ArrayList<String> prereqs) {
         this.prereqs = prereqs;
     }
 
-    /**
-     * @param prereqOf the prereqOf to set
-     */
-    public void setPrereqOf(ArrayList<Integer> prereqOf) {
-        this.prereqOf = prereqOf;
-    }
     
     /**
-     * Get Prerequsites of the current course
+     * Get Prerequisites of the current course
      * @return Current Course's Prerequisites
      */
-    public ArrayList<Integer> getPrereqs(){
+    public ArrayList<String> getPrereqs(){
         return this.prereqs;
     }
     
-    /**
-     * Get courses this course is the prereq for
-     * @return Courses this course opens
-     */
-    public ArrayList<Integer> getPrereqOf(){
-        return this.prereqOf;
-    }
-    
-    public void addPrereqOf(int num){
-        if(!this.prereqOf.contains(num))
-            this.prereqOf.add(num);
-    }
-    
-    public void addPrereq(int num){
-        if(!this.prereqs.contains(num))
-            this.prereqs.add(num);
+    public void addPrereq(String prereq){
+        if(!this.prereqs.contains(prereq))
+            this.prereqs.add(prereq);
     }
     
     /**

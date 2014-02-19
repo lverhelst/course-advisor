@@ -18,7 +18,6 @@ public class Session {
         for(Course c : initCourses)
         {
             this.addCourse(c.getSuggested_semester(), c);
-            credit_hours += 3;
         }
     }
     
@@ -38,7 +37,11 @@ public class Session {
     public void addCourse(int semester, Course course){
         boolean placed = false;
         semester = semester - 1; // 0-index the semester
+        System.out.println("Suggestes Semester " + semester);
         while(!placed){
+           if(semester >= semesters.length)
+               break;
+            
            for(int i = 0; i < semesters[semester].length; i++){
                if(semesters[semester][i] == null){
                    semesters[semester][i] = course;
@@ -50,13 +53,15 @@ public class Session {
         }
     }
     
-    public void printSemesters(){
-       
+    public String printSemesters(){
+         String results = "";
          for(int i = 0; i < semesters.length; i++){
-             System.out.println("Semester: " + (i + 1));
+             results += "Semester: " + (i + 1) + "\r\n";
              for(int j = 0; j < semesters[i].length; j++){
-                System.out.println("    " + ((semesters[i][j] != null)? semesters[i][j].getName() : "No Course"));
+                results +=  "    " + ((semesters[i][j] != null)? semesters[i][j].getName() : "No Course") + "\r\n";
              }
         }
+         System.out.println(results);
+         return results;
     }
 }

@@ -40,37 +40,16 @@ public class CourseList {
                 current.setName(components[1]);
                 if(!components[2].equals(""))
                     for(String prereqnum : components[2].split(",")){
-                        int cnum = Integer.parseInt(prereqnum);
-                        //Check if the course exits in the hash map
-                        if(unbccourses.containsKey(cnum)){
-                            //add current course to other courses prereq
-                            unbccourses.get(cnum).addPrereqOf(cnum);
-
-                        }else{
-                            Course prereq = new Course(cnum);
-                            prereq.addPrereqOf(cnum);
-                            unbccourses.put(cnum, new Course(cnum));
+                        if(prereqnum.matches("[1-9]*")){
+                            int cnum = Integer.parseInt(prereqnum);
+                            //Check if the course exists in the hash map
+                            if(!unbccourses.containsKey(cnum)){
+                                Course prereq = new Course(cnum);
+                                unbccourses.put(cnum, new Course(cnum));
+                            }
                         }
                         //add prereq to current course's prereq list
-                        current.addPrereq(cnum);
-                    }
-                //Deal with courses that have this course as a prereq
-                if(!components[3].equals(""))
-                    for(String allowednum : components[3].split(",")){
-                        int cnum = Integer.parseInt(allowednum);
-                        //Check if the course exits in the hash map
-                        if(unbccourses.containsKey(cnum)){
-                            //add current course to other courses prereq
-                            unbccourses.get(cnum).addPrereqOf(cnum);
-
-                        }else{
-                            Course prereq = new Course(cnum);
-                            prereq.addPrereq(cnum);
-
-                            unbccourses.put(cnum, new Course(cnum));
-                        }
-                        //add prereq to current course's prereq list
-                        current.addPrereqOf(cnum);
+                        current.addPrereq(prereqnum);
                     }
                 current.setSuggested_semester(Integer.parseInt(components[4]));
                 //add to list (map)
@@ -121,7 +100,7 @@ public class CourseList {
                 return false;
         }else{
             Course toCheck = unbccourses.get(coursenum);
-            for(int num : toCheck.getPrereqs()){
+            for(String num : toCheck.getPrereqs()){
                 if(!unbccourses.containsKey(num)){
                     System.err.print("ERROR: Missing COURSE -> CPSC" + coursenum);
                     cantake &= false;

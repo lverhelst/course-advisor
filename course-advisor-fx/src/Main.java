@@ -14,9 +14,9 @@ public class Main {
         CourseList cl = new CourseList();
         if(cl.loadCourseList()){
             Session sesh = new Session(5);
-            sesh.addCourse(1, cl.get(100));
-            sesh.addCourse(1, cl.get(141));
-            
+            Course[] initialCourses = {cl.get(100), cl.get(141)};
+            sesh.setInitialCourses(initialCourses);
+                        
             InferenceEngine ie = new InferenceEngine(sesh, cl);
             ie.infer();
         }

@@ -1,14 +1,39 @@
 100!Computer Programming I!!101,230!1
 101!Computer Programming II!100,141!200,222!2
+126!Introduction to Computing!!!1
 141!Discrete Computational Mathematics!!242,200,230!1
+199!Introductory Special Topics 1!!!2
 200!Algorithm Analysis and Development!101,141!281,320!3
 222!Introduction to Concurrent and Distributed Programming!101!!3
 230!Introduction to Logic Design!100,141!231!3
 231!Computer Organization and Architecture!230!!4
 242!Mathematical Topics for Computer Science!141!320,340!2
 260!Ethics in Computer Science!!!1
+270!Human Interface Design!200!!4
 281!Data Structures I!200!300!4
+299!Introductory Special Topics II!!!4
 300!Software Engineering I!281!!5
 320!Programming Languages!200,242!!5
+321!Operating Systems!231,281,222,242!!6
+324!Introduction to Database Systems!281!!6
 340!Theory of Computation!242!!5
 344!Data Communications and Networking!!!3
+346!Cryptography and Data Security!100,141!!3
+350!Introduction to Computer Graphics!281!!5
+351!Management Information Systems!100!!5
+370!Functional and Logic Programming!141,281!!5
+377!Introduction to Robotics!231!!5
+400!Software Engineering Project!300!!7
+425!Introduction to Compiler Design!281,340!!7
+430!Undergraduate Thesis!90ch!!7
+441!Distributed Systems!321!!7
+442!Parallel Computing!321!!7
+444!Computer Networks!321!!7
+450!Bioinformatics!324!!7
+451!Digital Image Processing!101,242!!5
+472!Knowledge Based Systems!370!!7
+474!Natural Language Processing!370!!7
+475!Multiagent Systems!60ch!!5
+482!Data Structures II!281,340!!7
+485!Undergraduate Research Project!!!5
+499!Special Topics!!!5
