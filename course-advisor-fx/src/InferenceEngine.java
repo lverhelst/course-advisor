@@ -90,7 +90,7 @@ public class InferenceEngine {
         for(String prem : rule.split("=>")[0].split("\\+")){
             if(!"".equals(prem)) //Ensure that a rule with no premise is true (EX: ""=>CPSC100)
                 if(prem.endsWith("ch")){ //Handle credit hour facts
-                    premise &= (facts.containsKey("ch") && facts.get("ch").equals(prem)); //take advantage of short circuiting
+                    premise &= (facts.containsKey("ch") && Integer.parseInt(facts.get("ch").split("c")[0]) >= Integer.parseInt(prem.split("c")[0])); //take advantage of short circuiting
                 }else{
                     premise &= facts.containsKey(prem);
                 }
