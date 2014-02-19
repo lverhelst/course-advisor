@@ -86,6 +86,10 @@ public class CourseList {
         return true;
     }
     
+    public Course get(int course_num){
+        return unbccourses.get(course_num);
+    }
+    
     public void selectCourses(int[] courses){
         for(int coursenum : courses){
             if(!unbccourses.containsKey(coursenum)){

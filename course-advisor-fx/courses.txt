@@ -1,5 +1,5 @@
 100!Computer Programming I!!101,230!1
-101!Computer Programming II!101,141!200,222!2
+101!Computer Programming II!100,141!200,222!2
 141!Discrete Computational Mathematics!!242,200,230!1
 200!Algorithm Analysis and Development!101,141!281,320!3
 222!Introduction to Concurrent and Distributed Programming!101!!3

@@ -118,4 +118,8 @@ public class Course {
     public void setSuggested_semester(int suggested_semester) {
         this.suggested_semester = suggested_semester;
     }
+    
+    public String toString(){
+        return this.getNum() + " " + this.getName();
+    }
 }

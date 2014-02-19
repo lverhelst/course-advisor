@@ -18,5 +18,6 @@ public class CheckBoxCell extends ListCell<Course> {
         if (item != null) {
             this.setText(item.getName());
         }
+                
     }
 }
