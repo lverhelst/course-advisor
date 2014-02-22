@@ -1,6 +1,3 @@
-
-import javafx.application.Application;
-
 /**
  * @author Leon "The Night" Verhelst
  */
@@ -10,7 +7,6 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
         CourseList cl = new CourseList();
         if(cl.loadCourseList()){
             Session sesh = new Session(5);
