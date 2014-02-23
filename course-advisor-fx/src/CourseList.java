@@ -63,7 +63,9 @@ public class CourseList {
                 //find the requiremens and store for later
                 if(component.length > 4) {
                     subpart = component[4].split(",");
-                    requirements.put(component[0], subpart);
+                    
+                    if(subpart[0].length() == 7) //ensure there is actually text
+                        requirements.put(component[0], subpart);
                 }
                 
                 unbccourses.put(component[0], course);

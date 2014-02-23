@@ -10,7 +10,7 @@ public class Main {
         CourseList cl = new CourseList();
         if(cl.loadCourseList()){
             Session session = new Session(5);
-            Course[] initialCourses = cl.get("CPSC100","CPSC141","CPSC340","CPSC371");
+            Course[] initialCourses = cl.get("CPSC100","CPSC141","MATH100");
             session.setInitialCourses(initialCourses);
                         
             InferenceEngine ie = new InferenceEngine(session, cl);

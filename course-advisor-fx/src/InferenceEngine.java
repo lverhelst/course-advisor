@@ -16,7 +16,7 @@ public class InferenceEngine {
     
     //Example RULE: CPSC300 + 60CreditHours  => CPSC 400    p
     private ArrayList<Rule> rules;
-    private HashMap<Integer, Course> facts;
+    private HashMap<String, Course> facts;
     
     private Session session;
     private CourseList courseList;
@@ -38,7 +38,7 @@ public class InferenceEngine {
         
         //loads the currently selected courses
         for(Course course :current_Session.getSetCourses()){
-            facts.put(course.getNum(), course);
+            facts.put(course.getTitle(), course);
         }        
     }
     
@@ -68,9 +68,9 @@ public class InferenceEngine {
                 //checks if rule is valid and if it is, fires the rule
                 if(rule.check()) {                    
                     Course fire = rule.getAction();
-                    if(!facts.containsKey(fire.getNum())) {
-                        facts.put(fire.getNum(), fire);
-                        session.addCourse(courseList.get(fire.getName()).getSuggested_semester(), courseList.get(fire.getName()));                    
+                    if(!facts.containsKey(fire.getTitle())) {
+                        facts.put(fire.getTitle(), fire);
+                        session.addCourse(fire.getSuggested_semester(), fire);                    
                         applied_a_rule = true;
                     }
                 }
@@ -107,7 +107,7 @@ public class InferenceEngine {
             
             for(Course course: premises) {
                 if(course != null && premise)
-                    premise &= facts.containsKey(course.getNum());
+                    premise &= facts.containsKey(course.getTitle());
                 else //invalid course???
                     return false;
             }
