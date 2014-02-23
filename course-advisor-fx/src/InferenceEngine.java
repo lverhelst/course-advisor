@@ -103,11 +103,13 @@ public class InferenceEngine {
          * @return true if it should fire
          */
         public boolean check() {
-            boolean premise = true;
+            boolean premise = !premises.isEmpty();
             
             for(Course course: premises) {
-                if(course != null)
+                if(course != null && premise)
                     premise &= facts.containsKey(course.getNum());
+                else //invalid course???
+                    return false;
             }
             
             return premise;

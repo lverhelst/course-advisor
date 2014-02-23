@@ -76,7 +76,14 @@ public class CourseList {
                 
                 //find and add the requiements for the current course
                 for(String reqkey: requirements.get(key)) {
-                    course.addPrereq(unbccourses.get(reqkey));
+                    if(unbccourses.containsKey(reqkey)) {
+                        course.addPrereq(unbccourses.get(reqkey));
+                    } else { //if course is missing fill in the blank
+                        reqkey = reqkey.replace("XX", "0");
+                        course = new Course(reqkey);
+                        unbccourses.put(reqkey, course);
+                        course.addPrereq(unbccourses.get(reqkey));
+                    }
                 }
             }
             
