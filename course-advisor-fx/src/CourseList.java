@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CourseList {      
-    private HashMap<Integer, Course> unbccourses;
+    private HashMap<String, Course> unbccourses;
     
     /**
      * Default constructor
@@ -23,13 +23,63 @@ public class CourseList {
      * @return true if the loading was successful
      */
     public boolean loadCourseList(){
+        HashMap<String, String[]> requirements = new HashMap();
         unbccourses = new HashMap();
         BufferedReader br;
         try{
             //open file (This text file is the Knowledge Base for the Expert System)
-            br = new BufferedReader(new FileReader("courses.txt"));
+            br = new BufferedReader(new FileReader("courselist.txt"));
             String line = br.readLine();
             
+            //Example Line: CPSC100!Computer Programming I!Long Description!0,4!MATH115!
+            Course course;
+            String[] component;
+            String[] subpart;
+            String courseName;
+            
+            while(line != null) {
+                component = line.split("!");
+                course = new Course(component[0]);
+                course.setName(component[1]);
+                course.setDescription(component[2]);
+                
+                //find the number of credits
+                if(component.length > 3) {
+                    subpart = component[3].split(",");
+                    if(subpart.length > 0) {                    
+                        int num = 0;
+                        for(String credits: subpart) {
+                            num = Integer.parseInt(credits);
+
+                            //ensure course that have a higher limit for some reason are excluded
+                            if(num == 3 || num == 4) {
+                                break;
+                            }
+                        }  
+                    }
+                }
+                
+                //find the requiremens and store for later
+                if(component.length > 4) {
+                    subpart = component[4].split(",");
+                    requirements.put(component[0], subpart);
+                }
+                
+                unbccourses.put(component[0], course);
+                line = br.readLine();
+            }
+            
+            //add all the requirements to the courses            
+            for(String key :requirements.keySet()) {
+                course = unbccourses.get(key);
+                
+                //find and add the requiements for the current course
+                for(String reqkey: requirements.get(key)) {
+                    course.addPrereq(unbccourses.get(reqkey));
+                }
+            }
+            
+            /*
             //Line: Course Number|Name|Prereqs|Opens|Suggested Semester
             //Example Line: 100|Introduction to CPSC||101,244,346|1
             Course current;
@@ -59,7 +109,7 @@ public class CourseList {
                 //add to list (map)
                 unbccourses.put(courseNum, current);
                 line = br.readLine();
-            }
+            } */
             
             //close connection  
             br.close();
@@ -72,11 +122,11 @@ public class CourseList {
     
     /**
      * Used to retrieve a course from the master list
-     * @param course_num the course number
+     * @param course the course name eg CPSC100
      * @return the course object
      */
-    public Course get(int course_num){
-        return unbccourses.get(course_num);
+    public Course get(String course){
+        return unbccourses.get(course);
     }
     
     /**

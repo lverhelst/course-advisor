@@ -10,7 +10,7 @@ public class Main {
         CourseList cl = new CourseList();
         if(cl.loadCourseList()){
             Session sesh = new Session(5);
-            Course[] initialCourses = {cl.get(100), cl.get(141)};
+            Course[] initialCourses = {cl.get("CPSC100"), cl.get("CPSC141")};
             sesh.setInitialCourses(initialCourses);
                         
             InferenceEngine ie = new InferenceEngine(sesh, cl);

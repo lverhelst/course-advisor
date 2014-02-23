@@ -78,7 +78,7 @@ public class Session {
          for(int i = 0; i < semesters.length; i++){
              results += "Semester: " + (i + 1) + "\r\n";
              for(int j = 0; j < semesters[i].length; j++){
-                results +=  "    " + ((semesters[i][j] != null)? semesters[i][j].getName() : "No Course") + "\r\n";
+                results +=  "    " + ((semesters[i][j] != null)? semesters[i][j].getKey() + ": " +semesters[i][j].getName() : "No Course") + "\r\n";
              }
         }
          System.out.println(results);

@@ -70,7 +70,7 @@ public class InferenceEngine {
                     Course fire = rule.getAction();
                     if(!facts.containsKey(fire.getNum())) {
                         facts.put(fire.getNum(), fire);
-                        session.addCourse(courseList.get(fire.getNum()).getSuggested_semester(), courseList.get(fire.getNum()));                    
+                        session.addCourse(courseList.get(fire.getKey()).getSuggested_semester(), courseList.get(fire.getKey()));                    
                         applied_a_rule = true;
                     }
                 }
