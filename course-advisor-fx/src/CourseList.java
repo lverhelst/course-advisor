@@ -23,9 +23,10 @@ public class CourseList {
      * @return true if the loading was successful
      */
     public boolean loadCourseList(){
-        HashMap<String, String[]> requirements = new HashMap();
+        HashMap<String, String[]> requirements = new HashMap(); //stores the reqs
         unbccourses = new HashMap();
         BufferedReader br;
+        
         try{
             //open file (This text file is the Knowledge Base for the Expert System)
             br = new BufferedReader(new FileReader("courselist.txt"));
@@ -35,12 +36,11 @@ public class CourseList {
             Course course;
             String[] component;
             String[] subpart;
-            String courseName;
             
             while(line != null) {
                 component = line.split("!");
                 course = new Course(component[0]);
-                course.setName(component[1]);
+                course.setTitle(component[1]);
                 course.setDescription(component[2]);
                 
                 //find the number of credits
@@ -55,7 +55,8 @@ public class CourseList {
                             if(num == 3 || num == 4) {
                                 break;
                             }
-                        }  
+                        }
+                        course.setCredits(num);
                     }
                 }
                 
@@ -79,42 +80,10 @@ public class CourseList {
                 }
             }
             
-            /*
-            //Line: Course Number|Name|Prereqs|Opens|Suggested Semester
-            //Example Line: 100|Introduction to CPSC||101,244,346|1
-            Course current;
-            String[] components;
-            String[] requirments;
-            int courseNum;
-            
-            //Parse the file into individual courses
-            while(line != null) {
-                components = line.split("!");
-                courseNum = Integer.parseInt(components[0]);
-                
-                current = new Course(courseNum);
-                current.setName(components[1]);
-                
-                //parse the course requirements
-                if(!components[2].equals("")) {
-                    for(String prereq: components[2].split(",")) {
-                        if(prereq.matches("[1-9]*")) {
-                            int reqNum = Integer.parseInt(prereq);                            
-                            current.addPrereq(unbccourses.get(reqNum));
-                        } 
-                    }
-                }
-                current.setSuggested_semester(Integer.parseInt(components[4]));
-                
-                //add to list (map)
-                unbccourses.put(courseNum, current);
-                line = br.readLine();
-            } */
-            
             //close connection  
             br.close();
         }catch(IOException | NumberFormatException e){
-            System.out.println(e.toString());
+            System.err.println(e.toString());
             return false;
         }
         return true;
@@ -127,6 +96,21 @@ public class CourseList {
      */
     public Course get(String course){
         return unbccourses.get(course);
+    }
+    
+    /**
+     * Used to retrieve courses from the master list
+     * @param courses the courses to get based on name eg CPSC100
+     * @return the list of course objects
+     */
+    public Course[] get(String ... courses){
+        Course[] result = new Course[courses.length];
+        
+        for(int i = 0; i < courses.length; ++i) {
+            result[i] = unbccourses.get(courses[i]);
+        }
+        
+        return result;
     }
     
     /**

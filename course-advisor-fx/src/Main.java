@@ -9,12 +9,15 @@ public class Main {
     public static void main(String[] args) {
         CourseList cl = new CourseList();
         if(cl.loadCourseList()){
-            Session sesh = new Session(5);
-            Course[] initialCourses = {cl.get("CPSC100"), cl.get("CPSC141")};
-            sesh.setInitialCourses(initialCourses);
+            Session session = new Session(5);
+            Course[] initialCourses = cl.get("CPSC100","CPSC141","CPSC340","CPSC371");
+            session.setInitialCourses(initialCourses);
                         
-            InferenceEngine ie = new InferenceEngine(sesh, cl);
-            ie.infer();
+            InferenceEngine ie = new InferenceEngine(session, cl);
+            session = ie.infer();
+            
+            System.out.println("Credit hours: " + session.credit_hours + "/120 = " + (float)session.credit_hours/120 * 100 + "%");
+            System.out.println(session.printSemesters());
         }
         
         //start HUI

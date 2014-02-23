@@ -9,15 +9,15 @@ public class Course {
     //List of Course numbers that are prerequisites of this course
     private ArrayList<Course> prereqs = new  ArrayList();
     //Key of the course (Subject-num)
-    private String courseKey;
+    private final String name;
     //Subject of the course
-    private String subject;
-    //Name of the Course
-    private String name;
-    //Description of the course
-    private String description;
+    private final  String subject;
     //Number of the Course
     private final int num;
+    //Name of the Course
+    private String title;
+    //Description of the course
+    private String description;
     //number of credits for the course
     private int credits;
     //The suggested minimum semseter for the course to be taken
@@ -32,7 +32,7 @@ public class Course {
      * @param courseKey the course name for example CPSC100
      */
     public Course(String courseKey){
-        this.courseKey = courseKey;
+        this.name = courseKey;
         this.subject = courseKey.substring(0, 4);
         this.num = Integer.parseInt(courseKey.substring(4));
         this.suggested_semester = (int)(num/100);
@@ -42,23 +42,31 @@ public class Course {
      * Used to get the course name eg CPSC100
      * @return the course name as a string
      */
-    public String getKey() {
-        return courseKey;
+    public String getName() {
+        return name;
     }
     
     /**
-     * Used to set the courses name (Short description)
-     * @param name a string of the name of the course (Short description)
+     * Used to get the courses subject
+     * @return 
      */
-    public void setName(String name) {
-        this.name = name;
+    public String getSubject() {
+        return subject;
+    }
+    
+    /**
+     * Used to set the courses title (Short description)
+     * @param title a string of the title of the course (Short description)
+     */
+    public void setTitle(String title) {
+        this.title = title;
     }
     
     /**
      * @return the name
      */
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }  
 
     /**
@@ -119,8 +127,6 @@ public class Course {
         if(!this.prereqs.contains(prereq))
             this.prereqs.add(prereq);
     }  
-    
-        
 
     /**
      * @return the suggested_semester
@@ -134,10 +140,10 @@ public class Course {
      */
     public void setSuggested_semester(int suggested_semester) {
         this.suggested_semester = suggested_semester;
-    }
+    }    
     
     @Override
     public String toString(){
-        return this.getNum() + " " + this.getName();
+        return getName()+ ": " + getTitle() + " " + getCredits() + ((taken) ? " (Taken)":"");
     }
 }

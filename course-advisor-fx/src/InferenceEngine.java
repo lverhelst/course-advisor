@@ -27,37 +27,37 @@ public class InferenceEngine {
      * @param cl the list of courses (rules)
      */
     public InferenceEngine(Session current_Session, CourseList cl){
+        rules = new ArrayList();
+        facts = new HashMap();
+        
         this.session = current_Session;
         this.courseList = cl;
-        rules = new ArrayList();
+        
+        //loads the prereq rules
         this.loadRules();
-        facts = new HashMap();
+        
+        //loads the currently selected courses
         for(Course course :current_Session.getSetCourses()){
             facts.put(course.getNum(), course);
         }        
     }
     
+    /**
+     * Private class used to load the rules to be used in the inference engine
+     */
     private void loadRules(){
-        //Load Course Prerequisite Rules
-        //EX: CourseA+CourseB=>CourseC
+        //Load Course Prerequisite Rules EX: CourseA+CourseB=>CourseC
         for(Course course : courseList.getCourses()){
             rules.add(new Rule(course, course.getPrereqs()));
-            /*
-            String course_rule = "";
-            for(int i = 0; i < c.getPrereqs().size(); i++){
-                course_rule += c.getPrereqs().get(i);
-                if(i != c.getPrereqs().size() - 1){
-                    course_rule += "+";
-                }
-            }
-            course_rule += "=>" + c.getNum();
-            rules.add(course_rule);
-            */
         }
-        //TODO: Load Other Rules
     }
     
-    public void infer(){
+    /**
+     * Performs forward chaining in order to find what courses should be taken
+     * based on the current rules and selected courses
+     * @return the inference session for the user
+     */
+    public Session infer(){
         boolean applied_a_rule = true;
         //Stop when the number of credits are satisfied, or there are no more courses
         //to choose from
@@ -70,51 +70,15 @@ public class InferenceEngine {
                     Course fire = rule.getAction();
                     if(!facts.containsKey(fire.getNum())) {
                         facts.put(fire.getNum(), fire);
-                        session.addCourse(courseList.get(fire.getKey()).getSuggested_semester(), courseList.get(fire.getKey()));                    
+                        session.addCourse(courseList.get(fire.getName()).getSuggested_semester(), courseList.get(fire.getName()));                    
                         applied_a_rule = true;
                     }
                 }
             }
-            /*
-            System.out.println("Facts"); 
-            for(String f : facts.keySet())
-                System.out.println(f);
-            System.out.println(" ");
-             for(String rule : rules){
-                applied_a_rule = false;
-                System.out.println(rule + ": " + checkRule(rule));
-                if(checkRule(rule)){
-                    String res = rule.split("=>")[1];
-                    if(!facts.containsKey(res)){
-                        applied_a_rule = true;
-                        System.out.println("Adding fact: " + rule.split("=>")[1]);
-                        facts.put(res, res);
-                        session.addCourse(courseList.get(Integer.parseInt(res)).getSuggested_semester(), courseList.get(Integer.parseInt(res)));
-                        break;
-                    }
-                }
-             }
-             facts.put("ch", session.credit_hours + "ch");
-             System.out.println(session.credit_hours + "ch");*/
         }
-        System.out.println("Credit hours: " + session.credit_hours + "/120 = " + (float)session.credit_hours/120 * 100 + "%");
-        session.printSemesters();
-    }
-    
-    /*
-    private boolean checkRule(String rule){
-        boolean premise = true;
         
-        for(String prem : rule.split("=>")[0].split("\\+")){
-            if(!"".equals(prem)) //Ensure that a rule with no premise is true (EX: ""=>CPSC100)
-                if(prem.endsWith("ch")){ //Handle credit hour facts
-                    premise &= (facts.containsKey("ch") && facts.get("ch").equals(prem)); //take advantage of short circuiting
-                }else{
-                    premise &= facts.containsKey(prem);
-                }
-        }
-        return premise;
-    }*/
+        return session;
+    }
     
     /**
      * Inner class used to model the rules
