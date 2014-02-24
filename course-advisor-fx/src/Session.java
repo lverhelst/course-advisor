@@ -36,27 +36,25 @@ public class Session {
      */
     public Course[] getSetCourses(){
         ArrayList<Course> taken = new ArrayList();
-        
         for(Course[] courses: semesters) {
             for(Course course: courses) {
                 if(course != null)
                     taken.add(course);
             }
         }
-        
         Course[] ret = new Course[taken.size()];
         return taken.toArray(ret);
     }
     
     /**
      * Used to add a course to the session
-     * @param semester the semester for the course
+     * @param year the suggested academic year for the course
      * @param course the course itself
      */
-    public void addCourse(int semester, Course course){
+    public void addCourse(int year, Course course){
         boolean placed = false;
-        semester = semester - 1; // 0-index the semester
-        
+        int semester = (year - 1) * 2; // 0-index the semester, set to years
+        System.out.println(course.getName());
         while(!placed){
            if(semester >= semesters.length)
                break;

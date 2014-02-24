@@ -7,7 +7,8 @@ import java.util.ArrayList;
  */
 public class Course {
     //List of Course numbers that are prerequisites of this course
-    private ArrayList<Course> prereqs = new  ArrayList();
+    //This stores the course NAME //<degree><number> //EX: CPSC10
+    private ArrayList<String> prereqs = new  ArrayList();
     //Key of the course (Subject-num)
     private final String name;
     //Subject of the course
@@ -21,7 +22,7 @@ public class Course {
     //number of credits for the course
     private int credits;
     //The suggested minimum semseter for the course to be taken
-    private int suggested_semester;
+    private int academic_year;
     //If the course is selected
     public boolean taken;
     public boolean selected;
@@ -35,7 +36,7 @@ public class Course {
         this.name = courseKey;
         this.subject = courseKey.substring(0, 4);
         this.num = Integer.parseInt(courseKey.substring(4));
-        this.suggested_semester = (int)(num/100);
+        this.academic_year = (int)(num/100);
     }
     
     /**
@@ -110,7 +111,7 @@ public class Course {
     /**
      * @param prereqs the prereqs to set
      */
-    public void setPrereqs(ArrayList<Course> prereqs) {
+    public void setPrereqs(ArrayList<String> prereqs) {
         this.prereqs = prereqs;
     }
 
@@ -119,27 +120,27 @@ public class Course {
      * Get Prerequisites of the current course
      * @return Current Course's Prerequisites
      */
-    public ArrayList<Course> getPrereqs(){
+    public ArrayList<String> getPrereqs(){
         return this.prereqs;
     }
     
-    public void addPrereq(Course prereq){
+    public void addPrereq(String prereq){
         if(!this.prereqs.contains(prereq))
             this.prereqs.add(prereq);
     }  
 
     /**
-     * @return the suggested_semester
+     * @return the academic_year
      */
-    public int getSuggested_semester() {
-        return suggested_semester;
+    public int getAcademic_Year() {
+        return academic_year;
     }
 
     /**
-     * @param suggested_semester the suggested_semester to set
+     * @param academic_Year the academic_year to set
      */
-    public void setSuggested_semester(int suggested_semester) {
-        this.suggested_semester = suggested_semester;
+    public void setAcademic_Year(int academic_Year) {
+        this.academic_year = academic_Year;
     }    
     
     @Override

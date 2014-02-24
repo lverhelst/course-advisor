@@ -1,13 +1,13 @@
 /**
  * @author Leon Verhelst and Emery Berg
  * This class is used to load classes and handle the structure of classes
- * Used as the Inference Engine for the Expert System
- * The Rules are the relationships stored in the Courses Class
+ * This class acts as the knowledge base of the classes
  */
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class CourseList {      
@@ -50,7 +50,6 @@ public class CourseList {
                         int num = 0;
                         for(String credits: subpart) {
                             num = Integer.parseInt(credits);
-
                             //ensure course that have a higher limit for some reason are excluded
                             if(num == 3 || num == 4) {
                                 break;
@@ -60,18 +59,27 @@ public class CourseList {
                     }
                 }
                 
-                //find the requiremens and store for later
+                //find the requirements and store for later
                 if(component.length > 4) {
                     subpart = component[4].split(",");
                     
                     if(subpart[0].length() == 7) //ensure there is actually text
+                    {
                         requirements.put(component[0], subpart);
+                        for(String s : subpart)
+                            course.addPrereq(s);
+                    }
                 }
                 
                 unbccourses.put(component[0], course);
+                if(component[0].startsWith("CPSC")){
+                    System.out.println(line);
+                }
+                
+                
                 line = br.readLine();
             }
-            
+          /*
             //add all the requirements to the courses            
             for(String key :requirements.keySet()) {
                 course = unbccourses.get(key);
@@ -79,15 +87,16 @@ public class CourseList {
                 //find and add the requiements for the current course
                 for(String reqkey: requirements.get(key)) {
                     if(unbccourses.containsKey(reqkey)) {
-                        course.addPrereq(unbccourses.get(reqkey));
+                        course.addPrereq(unbccourses.get(reqkey).getName());
                     } else { //if course is missing fill in the blank
                         reqkey = reqkey.replace("XX", "0");
                         course = new Course(reqkey);
                         unbccourses.put(reqkey, course);
-                        course.addPrereq(unbccourses.get(reqkey));
+                        course.addPrereq(unbccourses.get(reqkey).getName());
                     }
                 }
             }
+           */
             
             //close connection  
             br.close();
@@ -121,59 +130,7 @@ public class CourseList {
         
         return result;
     }
-    
-    /**
-     * Used to set a course to selected state
-     * @param courses the course numbers to set as selected
-     */
-    public void selectCourses(int[] courses){
-        for(int coursenum : courses){
-            if(!unbccourses.containsKey(coursenum)){
-                System.err.print("ERROR: Missing COURSE -> CPSC" + coursenum);
-            }else{
-                unbccourses.get(coursenum).selected = true;
-            }
-        }
-    }
-
-    /**
-     * Used to set course as taken
-     * @param courses the course to set as taken
-     */
-    public void setCoursesTaken(int[] courses){
-        for(int coursenum : courses){
-            if(!unbccourses.containsKey(coursenum)){
-                System.err.print("ERROR: Missing COURSE -> CPSC" + coursenum);
-            }else{
-                unbccourses.get(coursenum).taken = true;
-            }
-        }
-    }
-    
-    /**
-     * Checks to see if the given course can be taken given the current state of the course list
-     * @param coursenum the number of the course to be checked
-     * @return true if the course can be taken
-     */
-    public boolean checkPrereqs(int coursenum){
-        boolean cantake = true;
-        if(!unbccourses.containsKey(coursenum)){
-                System.err.print("ERROR: Missing COURSE -> CPSC" + coursenum);
-                return false;
-        }else{
-            Course toCheck = unbccourses.get(coursenum);
-            for(Course course : toCheck.getPrereqs()){
-                if(!unbccourses.containsKey(course.getNum())){
-                    System.err.print("ERROR: Missing COURSE -> CPSC" + coursenum);
-                    cantake &= false;
-                }else{
-                    cantake &= (unbccourses.get(course.getNum()).taken || unbccourses.get(course.getNum()).selected);
-                }
-            }
-        }
-        return cantake;
-    }
-    
+ 
     /**
      * Used to get an array of all the course which can be taken
      * @return an array of the all the courses
@@ -206,20 +163,5 @@ public class CourseList {
                 cselected.add(c);
         }
         return cselected.toArray(new Course[cselected.size()]);
-    }
-    
-    /**
-     * Get an array of course which are selected based on the pre-requirements 
-     * of courses selected
-     * @return the array of courses which can be selected
-     */
-    public Course[] getSelectableCourses(){
-        ArrayList<Course> cselectable = new ArrayList<Course>();
-        for(Course c : unbccourses.values()){
-            if(this.checkPrereqs(c.getNum()) && !(c.selected) && !(c.taken)){
-                cselectable.add(c);
-            }
-        }
-        return cselectable.toArray(new Course[cselectable.size()]);
     }
 }

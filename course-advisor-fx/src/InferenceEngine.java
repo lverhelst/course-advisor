@@ -4,11 +4,11 @@ import java.util.HashMap;
 
 /**
  * @author Leon Verhelst and Emery Berg
- * An Inference Engine applies rules to facts stored in the knowledge base
- * Our inference engine uses forward-chaining, that is, it starts from the given facts 
- * and applies its rules, asserts new facts and re-runs until it has reached a goal.
- * 
- * The inference engine is limited to rules that us a single premise, or a list of ANDed premises
+ An Inference Engine applies rules to facts stored in the knowledge base
+ Our inference engine uses forward-chaining, that is, it starts from the given facts 
+ and applies its rules, asserts new facts and re-runs until it has reached a goal.
+ 
+ The inference engine is limited to rules that us a single premise, or a list of ANDed premises
  */
 
 public class InferenceEngine {
@@ -16,7 +16,7 @@ public class InferenceEngine {
     
     //Example RULE: CPSC300 + 60CreditHours  => CPSC 400    p
     private ArrayList<Rule> rules;
-    private HashMap<String, Course> facts;
+    private HashMap<String, Fact> facts;
     
     private Session session;
     private CourseList courseList;
@@ -37,8 +37,10 @@ public class InferenceEngine {
         this.loadRules();
         
         //loads the currently selected courses
+        Fact newFact = null;
         for(Course course :current_Session.getSetCourses()){
-            facts.put(course.getTitle(), course);
+            newFact = new Fact("cr", course.getName()) ;
+            facts.put(newFact.toString(), newFact);
         }        
     }
     
@@ -47,9 +49,17 @@ public class InferenceEngine {
      */
     private void loadRules(){
         //Load Course Prerequisite Rules EX: CourseA+CourseB=>CourseC
+        Fact newFact = null;
+        ArrayList<Fact> pres ;
         for(Course course : courseList.getCourses()){
-            rules.add(new Rule(course, course.getPrereqs()));
+             newFact = new Fact("cr", course.getName());
+             pres = new ArrayList<Fact>();
+             for(String str : course.getPrereqs()){
+                 pres.add(new Fact("cr", str));
+             }
+             rules.add(new Rule(newFact, pres));
         }
+        System.out.println("Loaded Rules");
     }
     
     /**
@@ -67,10 +77,12 @@ public class InferenceEngine {
                 
                 //checks if rule is valid and if it is, fires the rule
                 if(rule.check()) {                    
-                    Course fire = rule.getAction();
-                    if(!facts.containsKey(fire.getTitle())) {
-                        facts.put(fire.getTitle(), fire);
-                        session.addCourse(fire.getSuggested_semester(), fire);                    
+                    Fact fire = rule.getAction();
+                    if(!facts.containsKey(fire.toString())) {
+                        facts.put(fire.toString(), fire);
+                                             
+                        
+                        session.addCourse(courseList.get(fire.getValue()).getAcademic_Year(), courseList.get(fire.getValue()));                    
                         applied_a_rule = true;
                     }
                 }
@@ -84,8 +96,8 @@ public class InferenceEngine {
      * Inner class used to model the rules
      */
     public class Rule {
-        public ArrayList<Course> premises;
-        public Course action;
+        public ArrayList<Fact> premises;
+        public Fact action;
         
         /**
          * Default constructor used to define the action and premises to 
@@ -93,7 +105,7 @@ public class InferenceEngine {
          * @param action the action to perform
          * @param premises which are needed to trigger
          */
-        public Rule(Course action, ArrayList<Course> premises) {
+        public Rule(Fact action, ArrayList<Fact> premises) {
             this.premises = premises;
             this.action = action;
         }
@@ -105,9 +117,12 @@ public class InferenceEngine {
         public boolean check() {
             boolean premise = !premises.isEmpty();
             
-            for(Course course: premises) {
-                if(course != null && premise)
-                    premise &= facts.containsKey(course.getTitle());
+            
+          
+            
+            for(Fact fact: premises) {
+                if(fact != null && premise)
+                    premise &= facts.containsKey(fact.toString());
                 else //invalid course???
                     return false;
             }
@@ -119,7 +134,7 @@ public class InferenceEngine {
          * Used to get the action of the rule
          * @return the action of the rule
          */
-        public Course getAction() {
+        public Fact getAction() {
             return action;
         }
     }
