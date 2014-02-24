@@ -3,8 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * 
- * @author Leon Verhelst
+ * @author Leon Verhelst and Emery Berg
  * An Inference Engine applies rules to facts stored in the knowledge base
  * Our inference engine uses forward-chaining, that is, it starts from the given facts 
  * and applies its rules, asserts new facts and re-runs until it has reached a goal.
@@ -15,86 +14,113 @@ import java.util.HashMap;
 public class InferenceEngine {
     private final int TOTAL_REQUIRED_CREDIT_HOURS = 120;
     
-    
-    
-    
-    //Example RULE: CPSC300 + 60CreditHours  => CPSC 400
-    private ArrayList<String> rules;
-    private HashMap<String, String> facts;
+    //Example RULE: CPSC300 + 60CreditHours  => CPSC 400    p
+    private ArrayList<Rule> rules;
+    private HashMap<String, Course> facts;
     
     private Session session;
     private CourseList courseList;
     
-    
+    /**
+     * Default constructor sets up and initializes the inference engine
+     * @param current_Session the current session (facts)
+     * @param cl the list of courses (rules)
+     */
     public InferenceEngine(Session current_Session, CourseList cl){
+        rules = new ArrayList();
+        facts = new HashMap();
+        
         this.session = current_Session;
         this.courseList = cl;
-        rules = new ArrayList<String>();
-        this.loadRules();
-        facts = new HashMap<String, String>();
-        for(Course s :current_Session.getSetCourses()){
-            facts.put(s.getNum() + "", s.getName());
-        }
         
+        //loads the prereq rules
+        this.loadRules();
+        
+        //loads the currently selected courses
+        for(Course course :current_Session.getSetCourses()){
+            facts.put(course.getTitle(), course);
+        }        
     }
     
+    /**
+     * Private class used to load the rules to be used in the inference engine
+     */
     private void loadRules(){
-        //Load Course Prerequisite Rules
-        //EX: CourseA+CourseB=>CourseC
-        for(Course c : courseList.getCourses()){
-            String course_rule = "";
-            for(int i = 0; i < c.getPrereqs().size(); i++){
-                course_rule += c.getPrereqs().get(i);
-                if(i != c.getPrereqs().size() - 1){
-                    course_rule += "+";
-                }
-            }
-            course_rule += "=>" + c.getNum();
-            rules.add(course_rule);
+        //Load Course Prerequisite Rules EX: CourseA+CourseB=>CourseC
+        for(Course course : courseList.getCourses()){
+            rules.add(new Rule(course, course.getPrereqs()));
         }
-        //TODO: Load Other Rules
     }
     
-    public void infer(){
+    /**
+     * Performs forward chaining in order to find what courses should be taken
+     * based on the current rules and selected courses
+     * @return the inference session for the user
+     */
+    public Session infer(){
         boolean applied_a_rule = true;
         //Stop when the number of credits are satisfied, or there are no more courses
         //to choose from
         while(session.credit_hours < TOTAL_REQUIRED_CREDIT_HOURS && applied_a_rule){
-            System.out.println("Facts"); 
-            for(String f : facts.keySet())
-                System.out.println(f);
-            System.out.println(" ");
-             for(String rule : rules){
+            for(Rule rule : rules) {
                 applied_a_rule = false;
-                System.out.println(rule + ": " + checkRule(rule));
-                if(checkRule(rule)){
-                    String res = rule.split("=>")[1];
-                    if(!facts.containsKey(res)){
+                
+                //checks if rule is valid and if it is, fires the rule
+                if(rule.check()) {                    
+                    Course fire = rule.getAction();
+                    if(!facts.containsKey(fire.getTitle())) {
+                        facts.put(fire.getTitle(), fire);
+                        session.addCourse(fire.getSuggested_semester(), fire);                    
                         applied_a_rule = true;
-                        System.out.println("Adding fact: " + rule.split("=>")[1]);
-                        facts.put(res, res);
-                        session.addCourse(courseList.get(Integer.parseInt(res)).getSuggested_semester(), courseList.get(Integer.parseInt(res)));
-                        break;
                     }
                 }
-             }
-             facts.put("ch", session.credit_hours + "ch");
-             System.out.println(session.credit_hours + "ch");
+            }
         }
-        System.out.println("Credit hours: " + session.credit_hours + "/120 = " + (float)session.credit_hours/120 * 100 + "%");
-        session.printSemesters();
+        
+        return session;
     }
     
-    private boolean checkRule(String rule){
-        boolean premise = true;
-        for(String prem : rule.split("=>")[0].split("\\+")){
-            if(!"".equals(prem)) //Ensure that a rule with no premise is true (EX: ""=>CPSC100)
-                if(prem.endsWith("ch")){ //Handle credit hour facts
-                    premise &= (facts.containsKey("ch") && Integer.parseInt(facts.get("ch").split("c")[0]) >= Integer.parseInt(prem.split("c")[0])); //take advantage of short circuiting
-                }else{
-                    premise &= facts.containsKey(prem);
-                }
+    /**
+     * Inner class used to model the rules
+     */
+    public class Rule {
+        public ArrayList<Course> premises;
+        public Course action;
+        
+        /**
+         * Default constructor used to define the action and premises to 
+         * trigger the action
+         * @param action the action to perform
+         * @param premises which are needed to trigger
+         */
+        public Rule(Course action, ArrayList<Course> premises) {
+            this.premises = premises;
+            this.action = action;
         }
-        return premise;
+        
+        /**
+         * Check if the rule should fire or not based on the facts
+         * @return true if it should fire
+         */
+        public boolean check() {
+            boolean premise = !premises.isEmpty();
+            
+            for(Course course: premises) {
+                if(course != null && premise)
+                    premise &= facts.containsKey(course.getTitle());
+                else //invalid course???
+                    return false;
+            }
+            
+            return premise;
+        }
+        
+        /**
+         * Used to get the action of the rule
+         * @return the action of the rule
+         */
+        public Course getAction() {
+            return action;
+        }
     }
 }

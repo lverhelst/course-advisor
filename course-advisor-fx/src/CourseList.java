@@ -1,5 +1,5 @@
 /**
- * @author Leon Verhelst
+ * @author Leon Verhelst and Emery Berg
  * This class is used to load classes and handle the structure of classes
  * Used as the Inference Engine for the Expert System
  * The Rules are the relationships stored in the Courses Class
@@ -10,65 +10,122 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CourseList {
-      
-    private HashMap<Integer, Course> unbccourses;
-    
-    CourseList(){
-        
-    }
+public class CourseList {      
+    private HashMap<String, Course> unbccourses;
     
     /**
-     * Loads course list from file
+     * Default constructor
+     */
+    CourseList(){}
+    
+    /**
+     * Loads the course list from the default file
+     * @return true if the loading was successful
      */
     public boolean loadCourseList(){
-        unbccourses = new HashMap<Integer, Course>();
+        HashMap<String, String[]> requirements = new HashMap(); //stores the reqs
+        unbccourses = new HashMap();
         BufferedReader br;
+        
         try{
             //open file (This text file is the Knowledge Base for the Expert System)
-            br = new BufferedReader(new FileReader("courses.txt"));
-            //read file
+            br = new BufferedReader(new FileReader("courselist.txt"));
             String line = br.readLine();
-            Course current;
-            //Line: Course Number|Name|Prereqs|Opens|Suggested Semester
-            //Example Line: 100|Introduction to CPSC||101,244,346|1
-            while(line != null){
-                System.out.println(line);
-                String[] components = line.split("!");
-                int coursenum = Integer.parseInt(components[0]);
-                current = new Course(coursenum);
-                current.setName(components[1]);
-                if(!components[2].equals(""))
-                    for(String prereqnum : components[2].split(",")){
-                        if(prereqnum.matches("[1-9]*")){
-                            int cnum = Integer.parseInt(prereqnum);
-                            //Check if the course exists in the hash map
-                            if(!unbccourses.containsKey(cnum)){
-                                Course prereq = new Course(cnum);
-                                unbccourses.put(cnum, new Course(cnum));
+            
+            //Example Line: CPSC100!Computer Programming I!Long Description!0,4!MATH115!
+            Course course;
+            String[] component;
+            String[] subpart;
+            
+            while(line != null) {
+                component = line.split("!");
+                course = new Course(component[0]);
+                course.setTitle(component[1]);
+                course.setDescription(component[2]);
+                
+                //find the number of credits
+                if(component.length > 3) {
+                    subpart = component[3].split(",");
+                    if(subpart.length > 0) {                    
+                        int num = 0;
+                        for(String credits: subpart) {
+                            num = Integer.parseInt(credits);
+
+                            //ensure course that have a higher limit for some reason are excluded
+                            if(num == 3 || num == 4) {
+                                break;
                             }
                         }
-                        //add prereq to current course's prereq list
-                        current.addPrereq(prereqnum);
+                        course.setCredits(num);
                     }
-                current.setSuggested_semester(Integer.parseInt(components[4]));
-                //add to list (map)
-                unbccourses.put(coursenum, current);
+                }
+                
+                //find the requiremens and store for later
+                if(component.length > 4) {
+                    subpart = component[4].split(",");
+                    
+                    if(subpart[0].length() == 7) //ensure there is actually text
+                        requirements.put(component[0], subpart);
+                }
+                
+                unbccourses.put(component[0], course);
                 line = br.readLine();
             }
+            
+            //add all the requirements to the courses            
+            for(String key :requirements.keySet()) {
+                course = unbccourses.get(key);
+                
+                //find and add the requiements for the current course
+                for(String reqkey: requirements.get(key)) {
+                    if(unbccourses.containsKey(reqkey)) {
+                        course.addPrereq(unbccourses.get(reqkey));
+                    } else { //if course is missing fill in the blank
+                        reqkey = reqkey.replace("XX", "0");
+                        course = new Course(reqkey);
+                        unbccourses.put(reqkey, course);
+                        course.addPrereq(unbccourses.get(reqkey));
+                    }
+                }
+            }
+            
             //close connection  
             br.close();
         }catch(IOException | NumberFormatException e){
-            System.out.println(e.toString());
+            System.err.println(e.toString());
             return false;
         }
         return true;
     }
     
-    public Course get(int course_num){
-        return unbccourses.get(course_num);
+    /**
+     * Used to retrieve a course from the master list
+     * @param course the course name eg CPSC100
+     * @return the course object
+     */
+    public Course get(String course){
+        return unbccourses.get(course);
     }
     
+    /**
+     * Used to retrieve courses from the master list
+     * @param courses the courses to get based on name eg CPSC100
+     * @return the list of course objects
+     */
+    public Course[] get(String ... courses){
+        Course[] result = new Course[courses.length];
+        
+        for(int i = 0; i < courses.length; ++i) {
+            result[i] = unbccourses.get(courses[i]);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Used to set a course to selected state
+     * @param courses the course numbers to set as selected
+     */
     public void selectCourses(int[] courses){
         for(int coursenum : courses){
             if(!unbccourses.containsKey(coursenum)){
@@ -79,6 +136,10 @@ public class CourseList {
         }
     }
 
+    /**
+     * Used to set course as taken
+     * @param courses the course to set as taken
+     */
     public void setCoursesTaken(int[] courses){
         for(int coursenum : courses){
             if(!unbccourses.containsKey(coursenum)){
@@ -88,10 +149,11 @@ public class CourseList {
             }
         }
     }
+    
     /**
      * Checks to see if the given course can be taken given the current state of the course list
-     * @param coursenum 
-     * @return 
+     * @param coursenum the number of the course to be checked
+     * @return true if the course can be taken
      */
     public boolean checkPrereqs(int coursenum){
         boolean cantake = true;
@@ -100,22 +162,30 @@ public class CourseList {
                 return false;
         }else{
             Course toCheck = unbccourses.get(coursenum);
-            for(String num : toCheck.getPrereqs()){
-                if(!unbccourses.containsKey(num)){
+            for(Course course : toCheck.getPrereqs()){
+                if(!unbccourses.containsKey(course.getNum())){
                     System.err.print("ERROR: Missing COURSE -> CPSC" + coursenum);
                     cantake &= false;
                 }else{
-                    cantake &= (unbccourses.get(num).taken || unbccourses.get(num).selected);
+                    cantake &= (unbccourses.get(course.getNum()).taken || unbccourses.get(course.getNum()).selected);
                 }
             }
         }
         return cantake;
     }
     
+    /**
+     * Used to get an array of all the course which can be taken
+     * @return an array of the all the courses
+     */
     public Course[] getCourses(){
         return this.unbccourses.values().toArray(new Course[unbccourses.values().size()]);
     }
     
+    /**
+     * Used to get an array of courses which have been set to taken
+     * @return an array of courses which have been taken
+     */
     public Course[] getTakenCourses(){
         ArrayList<Course> ctaken = new ArrayList<Course>();
         for(Course c : unbccourses.values()){
@@ -125,6 +195,10 @@ public class CourseList {
         return ctaken.toArray(new Course[ctaken.size()]);
     }
     
+    /**
+     * Used to get a array of the courses which have been selected
+     * @return an array of the course which are selected
+     */
     public Course[] getSelectedCourses(){
         ArrayList<Course> cselected = new ArrayList<Course>();
         for(Course c : unbccourses.values()){
@@ -133,7 +207,12 @@ public class CourseList {
         }
         return cselected.toArray(new Course[cselected.size()]);
     }
-    //Gets a list of courses that have not been selected, nor taken, but whose prereqs are satisfied
+    
+    /**
+     * Get an array of course which are selected based on the pre-requirements 
+     * of courses selected
+     * @return the array of courses which can be selected
+     */
     public Course[] getSelectableCourses(){
         ArrayList<Course> cselectable = new ArrayList<Course>();
         for(Course c : unbccourses.values()){

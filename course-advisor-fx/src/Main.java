@@ -1,6 +1,3 @@
-
-import javafx.application.Application;
-
 /**
  * @author Leon "The Night" Verhelst
  */
@@ -10,15 +7,17 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
         CourseList cl = new CourseList();
         if(cl.loadCourseList()){
-            Session sesh = new Session(5);
-            Course[] initialCourses = {cl.get(100), cl.get(141)};
-            sesh.setInitialCourses(initialCourses);
+            Session session = new Session(5);
+            Course[] initialCourses = cl.get("CPSC100","CPSC141","MATH100");
+            session.setInitialCourses(initialCourses);
                         
-            InferenceEngine ie = new InferenceEngine(sesh, cl);
-            ie.infer();
+            InferenceEngine ie = new InferenceEngine(session, cl);
+            session = ie.infer();
+            
+            System.out.println("Credit hours: " + session.credit_hours + "/120 = " + (float)session.credit_hours/120 * 100 + "%");
+            System.out.println(session.printSemesters());
         }
         
         //start HUI
