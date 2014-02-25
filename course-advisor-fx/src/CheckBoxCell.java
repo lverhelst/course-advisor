@@ -1,4 +1,3 @@
-
 import javafx.scene.control.ListCell;
 
 /**
