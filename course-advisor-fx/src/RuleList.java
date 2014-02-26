@@ -9,7 +9,7 @@ import java.util.HashMap;
  * @author Emery Berg
  */
 public class RuleList {
-    private HashMap<String, RuleList.Rule> ruleset;
+    private HashMap<String, Rule> ruleset;
     
      /**
       * Used to load a list of rules from the file passed into the method
@@ -38,7 +38,7 @@ public class RuleList {
                 parts = line.split("!");
                 set = parts[2].split(",");
                 number = Integer.parseInt(parts[3]);
-                Rule rule = new Rule(parts[0], parts[1], number, set);
+                GradRule rule = new GradRule(parts[0], parts[1], number, set);
                 ruleset.put(rule.name, rule);
                 line = br.readLine();
             }
@@ -51,9 +51,25 @@ public class RuleList {
     }   
     
     /**
+     * @return a string array of the rule names 
+     */    
+    public String[] getList() {
+        return ruleset.keySet().toArray(new String[ruleset.keySet().size()]);
+    }
+    
+    /**
+     * Used to get the rule based on the name
+     * @param ruleName the name of the rule
+     * @return the rule found in the list
+     */
+    public Rule getRule(String ruleName) {
+        return ruleset.get(ruleName);
+    }
+    
+    /**
      * Inner class used to model the rules
      */
-    public class Rule {
+    public class GradRule implements Rule {
         public String name;
         public String type;
         public String[] set;
@@ -66,7 +82,7 @@ public class RuleList {
          * @param number (integer) Normal (number of courses to be taken) | Level (number of credits at that level)
          * @param set (String[]) Normal (list of courses) | (the min level of course eg 300)
          */
-        public Rule(String name, String type, int number, String ... set) {
+        public GradRule(String name, String type, int number, String ... set) {
             this.name = name;
             this.type = type;
             this.number = number;
@@ -143,6 +159,13 @@ public class RuleList {
             }
             
             return intersection;
+        }
+        
+        /**
+        * @return a string of the rule type 
+        */
+        public String getType(){
+            return type;
         }
       
         /**
