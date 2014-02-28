@@ -136,10 +136,14 @@ public class RuleList {
             int credits = 0;
             
             for(String crule: this.set) {
-                int cnum = Integer.parseInt(crule);
+                int cnum = Integer.parseInt(crule.substring(4));
+                String csubject = crule.substring(0,4);
+                
                 for(String rule: set) {
                     int num = Integer.parseInt(rule.substring(7));
-                    if(num >= cnum) {
+                    String subject = rule.substring(3,7);
+                    
+                    if(csubject.equals("NULL") || csubject.equals(subject) && num >= cnum) {
                         credits += 3;
                     }
                 }
@@ -189,10 +193,14 @@ public class RuleList {
             ArrayList<String> intersection = new ArrayList();
                         
             for(String crule: this.set) {
-                int cnum = Integer.parseInt(crule);
+                int cnum = Integer.parseInt(crule.substring(4));                
+                String csubject = crule.substring(0,4);
+                
                 for(String rule: set) {
                     int num = Integer.parseInt(rule.substring(4));
-                    if(num >= cnum)
+                    String subject = rule.substring(3,7);
+                    
+                    if(csubject.equals("NULL") || csubject.equals(subject) && num >= cnum)
                         intersection.add(rule);
                 }
             }
