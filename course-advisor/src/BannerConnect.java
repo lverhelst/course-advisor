@@ -1,4 +1,4 @@
-
+package inference;
 
 
 import java.io.BufferedReader;
@@ -146,20 +146,22 @@ public class BannerConnect {
                                         }
                                         break;
                                     case "Prerequisites: ":
-                                        boolean start = true;
                                         in.readLine();
                                         temp = in.readLine().replace("&amp", "");
-                                        for(String blah: temp.split(";"))
-                                            if(blah.contains("one_subj")) { 
-                                                if(!start) {
-                                                    output += ",";
-                                                }
-                                                output += blah.substring(9);
-                                                start = false;
-                                            } else if(blah.contains("sel_crse_strt")) {                                                
-                                                output += blah.substring(14);
-                                            } 
-                                        output += "!";
+                                        
+                                        for(String list: temp.split("/A>")) {
+                                            for(String blah: list.split(";"))
+                                                if(blah.contains("one_subj")) { 
+                                                    output += blah.substring(9);
+                                                } else if(blah.contains("sel_crse_strt")) {                                                
+                                                    output += blah.substring(14);
+                                                } else if(blah.contains("<A HREF")) {
+                                                    if(blah.contains("or"))
+                                                        output += "OR";
+                                                    else if(blah.contains("and"))
+                                                        output += "AND";
+                                                }  
+                                        }
                                         break;
                                 }
                                 break;
