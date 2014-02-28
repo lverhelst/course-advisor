@@ -138,17 +138,16 @@ public class RuleList {
             for(String crule: this.set) {
                 int cnum = Integer.parseInt(crule.substring(4));
                 String csubject = crule.substring(0,4);
-                
+
                 for(String rule: set) {
                     int num = Integer.parseInt(rule.substring(7));
                     String subject = rule.substring(3,7);
-                    
                     if(csubject.equals("NULL") || csubject.equals(subject) && num >= cnum) {
                         credits += 3;
                     }
                 }
             }
-            System.out.println("CREDITS: "+ credits + " NUMBER: " + number);
+            System.out.println("CUBJECT " + "CREDITS: "+ credits + " NUMBER: " + number);
             return credits >= number;
         }  
         
