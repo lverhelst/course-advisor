@@ -61,23 +61,23 @@ public class CourseList {
                 //find the requirements and store for later
                 if(component.length > 4) {
                     
-                    //subpart = component[4].split(",");
-                    subpart = component[4].split("AND|OR");
+                    subpart = component[4].split(",");
+                    //subpart = component[4].split("AND|OR");
                     if(subpart[0].length() == 7) //ensure there is actually text
                     {
                         requirements.put(component[0], subpart);
                         String prestring = "";
                         for(String s : subpart){
-                            //Filter out pre-university requirements
-                            if(!s.endsWith("115") && !s.equals("AND") && !s.equals("OR")){
-                                course.addPrereq(s);
+                            //Filter out pre-university requirements (Any 115 course)
+                            if(!s.endsWith("115")){
+                                if(!s.equals("AND") && !s.equals("OR"))
+                                    course.addPrereq(s);
                                 prestring+=s;
                             } 
                         }
                         course.preString = prestring;
                     }
                 }
-                
                 unbccourses.put(component[0], course);
                 if(component[0].startsWith("CPSC")){
                     System.out.println(line);
