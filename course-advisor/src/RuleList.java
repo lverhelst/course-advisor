@@ -100,7 +100,23 @@ public class RuleList {
          * @return true if the rule passes
          */
         @Override
-        public boolean check(String[] set) {
+        public boolean check(String[] set) {          
+            switch(type) {
+                case "Normal":
+                    return checkNorm(set);
+                case "Level":
+                    return checkLevel(set);
+            }
+            
+            return false;
+        }  
+        
+        /**
+         * Simple method which returns true if the rule passes
+         * @param set the set of courses to check against the list
+         * @return true if the rule passes
+         */
+        private boolean checkNorm(String[] set) {
             int matched = 0;
             for(String crule: this.set) {
                 for(String rule: set) {
@@ -109,6 +125,27 @@ public class RuleList {
                 }
             }
             return matched >= number;
+        }  
+        
+        /**
+         * Simple method which returns true if the rule passes
+         * @param set the set of courses to check against the list
+         * @return true if the rule passes
+         */
+        private boolean checkLevel(String[] set) {
+            int credits = 0;
+            
+            for(String crule: this.set) {
+                int cnum = Integer.parseInt(crule);
+                for(String rule: set) {
+                    int num = Integer.parseInt(rule.substring(7));
+                    if(num >= cnum) {
+                        credits += 3;
+                    }
+                }
+            }
+            
+            return credits >= number;
         }  
         
         /**
