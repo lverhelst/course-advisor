@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 /**
@@ -57,6 +58,10 @@ public class RuleList {
         return ruleset.keySet().toArray(new String[ruleset.keySet().size()]);
     }
     
+    public Collection<Rule> getRuleSet(){
+        return ruleset.values();
+    }
+    
     /**
      * Used to get the rule based on the name
      * @param ruleName the name of the rule
@@ -94,12 +99,13 @@ public class RuleList {
          * @param set the set of courses to check against the list
          * @return true if the rule passes
          */
+        @Override
         public boolean check(String[] set) {
             int matched = 0;
             
             for(String crule: this.set) {
                 for(String rule: set) {
-                    if(crule.equals(rule))
+                    if(crule.equals(rule.split(":")[1]))
                         matched++;
                 }
             }
@@ -173,6 +179,18 @@ public class RuleList {
          */
         public String getAction() {
             return name;
+        }
+        /**
+         * @return the Set of Names of Courses for this rule
+         */
+        public String[] getSet(){
+            return this.set;
+        }
+        /**
+         * @return the name of the rule
+         */
+        public String getName(){
+            return this.name;
         }
     }
 }

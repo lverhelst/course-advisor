@@ -11,10 +11,10 @@ public class Main {
         RuleList rl = new RuleList();
         
         if(cl.loadCourseList() && rl.loadRuleList("cpscrules.txt")){
-            Course[] initialCourses = cl.get("CPSC100","CPSC141","MATH100","CPSC242", "MATH220");
+           // Course[] initialCourses = cl.get("CPSC100","CPSC141","MATH100","CPSC242", "MATH220");
                         
             Session session = new Session(5);          
-            session.setInitialCourses(initialCourses);
+            //session.setInitialCourses(initialCourses);
             InferenceEngine ie = new InferenceEngine(session, cl, rl);
             session = ie.infer();
             

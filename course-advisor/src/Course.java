@@ -26,6 +26,8 @@ public class Course {
     //If the course is selected
     public boolean taken;
     public boolean selected;
+    
+    public String preString;
         
     /**
      * Constructor for course with minimal information, only the course|number is needed

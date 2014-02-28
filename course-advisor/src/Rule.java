@@ -28,4 +28,15 @@ public interface Rule {
     * @return the name of the rule
     */
    public String getAction();
+   
+   /**
+    * Returns the names of the courses of the rule
+    * @return a list of the courses in this rule's premises
+    */
+   public String[] getSet();
+   
+   /**
+    * @return The name of the rule
+    */
+   public String getName();
 }

@@ -60,13 +60,16 @@ public class CourseList {
                 
                 //find the requirements and store for later
                 if(component.length > 4) {
+                    course.preString = component[4];
                     subpart = component[4].split(",");
-                    
+                    //TODO: supbart = component[4].split("AND|OR");
                     if(subpart[0].length() == 7) //ensure there is actually text
                     {
                         requirements.put(component[0], subpart);
                         for(String s : subpart)
-                            course.addPrereq(s);
+                            //Filter out pre-university requirements
+                            if(!s.equals("MATH115") && !s.equals("AND") && !s.equals("OR"))
+                                course.addPrereq(s);
                     }
                 }
                 

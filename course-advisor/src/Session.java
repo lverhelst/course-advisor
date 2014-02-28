@@ -54,7 +54,7 @@ public class Session {
     public void addCourse(int year, Course course){
         boolean placed = false;
         int semester = (year - 1) * 2; // 0-index the semester, set to years
-        System.out.println(course.getName());
+       // System.out.println(course.getName());
         while(!placed){
            if(semester >= semesters.length)
                break;
@@ -91,7 +91,6 @@ public class Session {
                 results +=  "    " + ((course != null) ? course.toString() : "No Course") + "\r\n";
             }
         }
-        
         return results;
     }
 }
