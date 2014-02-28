@@ -83,7 +83,7 @@ public class CourseList {
                 }
                 unbccourses.put(component[0], course);
                 if(component[0].startsWith("CPSC")){
-                    System.out.println(line);
+                    //System.out.println(line);
                 }
                 
                 

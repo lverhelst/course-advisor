@@ -168,11 +168,8 @@ public class InferenceEngine {
                 }
             }
         }
-        
         return session;
     }
-    
-    //COURSE RULE NEEDS TO INCLUDE ORS
     
     /**
      * Inner class used to model the rules
