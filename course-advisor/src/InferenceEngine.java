@@ -91,7 +91,8 @@ public class InferenceEngine {
                             for(CourseRule cr : rules) {
                                //check prereqs for the rule resulting in this course
                                 if(cr.getAction().getValue().equals(course)){   
-                                    if(cr.check()) {  //if(cr.stringCheck(cr.prereqString)) {                  
+                                    //if(cr.check()) {  //
+                                    if(cr.stringCheck(cr.prereqString)) {                  
                                         canTake = true; 
                                         break;
                                     }
@@ -122,7 +123,8 @@ public class InferenceEngine {
             for(CourseRule rule : rules) {
                 
                 
-                if(rule.check()) {  //if(cr.stringCheck(cr.prereqString)) {                  
+                //if(rule.check()) {  //
+                if(rule.stringCheck(rule.prereqString)) {                  
                     Fact fire = rule.getAction();
                     if(!facts.containsKey(fire.toString())) {
                         facts.put(fire.toString(), fire);
@@ -195,6 +197,7 @@ public class InferenceEngine {
          * @return result
          */
         public boolean stringCheck(String prestring){
+            System.out.println("PRESTRING: " + prestring);
             //Case when 0 tokens (no prereqs)
             if(prestring == null || prestring.equals(""))
                 return true;
