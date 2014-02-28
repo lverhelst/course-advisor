@@ -30,7 +30,7 @@ public class BannerConnect {
         File file = new File("courselist.html");
         try {
             BufferedReader in = new BufferedReader(new FileReader(file));
-            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream("list.txt")));
+            PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream("courselist.txt")));
             
             String inputLine = in.readLine();
             String[] lines;
