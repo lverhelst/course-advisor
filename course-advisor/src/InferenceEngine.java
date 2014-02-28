@@ -104,9 +104,10 @@ public class InferenceEngine {
                                     //Add to facts, break out so that we don't add extra
                                                                
                                     System.out.println("Adding priority course: " + course + " from rule: " + rule.getName());                                
-                                    if(session.addCourse(courseList.get(course).getAcademic_Year(), courseList.get(course)))
+                                    if(session.addCourse(courseList.get(course).getAcademic_Year(), courseList.get(course))){
                                          facts.put("cr:" + course, new Fact("cr", course));    
-                                    applied_a_rule = true;
+                                        applied_a_rule = true;
+                                    }
                                     break;
                                 }
                            }
@@ -136,9 +137,10 @@ public class InferenceEngine {
                                     //Add to facts, break out so that we don't add extra
                                                                  
                                     System.out.println("Adding priority course: " + course + " from rule: " + rule.getName());                                
-                                    if(session.addCourse(courseList.get(course).getAcademic_Year(), courseList.get(course))) 
+                                    if(session.addCourse(courseList.get(course).getAcademic_Year(), courseList.get(course))) {
                                         facts.put("cr:" + course, new Fact("cr", course));   
-                                    applied_a_rule = true;
+                                        applied_a_rule = true;
+                                    }
                                     break;
                                 }
                            }
@@ -147,7 +149,7 @@ public class InferenceEngine {
                 }
             }
         }
-        applied_a_rule = true; //TODO: change to TRUE to enable electives!
+        applied_a_rule = false; //TODO: change to TRUE to enable electives!
         while(session.credit_hours < TOTAL_REQUIRED_CREDIT_HOURS && applied_a_rule){
             applied_a_rule = false;
             
@@ -162,9 +164,10 @@ public class InferenceEngine {
                         
                                              
                       //  System.out.println("Adding non-priority course: " + fire.getValue());      
-                        if(session.addCourse(courseList.get(fire.getValue()).getAcademic_Year(), courseList.get(fire.getValue())))
+                        if(session.addCourse(courseList.get(fire.getValue()).getAcademic_Year(), courseList.get(fire.getValue()))){
                             facts.put(fire.toString(), fire);
-                        applied_a_rule = true;
+                            applied_a_rule = true;
+                        }
                     }
                 }
             }
