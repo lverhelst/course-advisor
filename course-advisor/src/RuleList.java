@@ -144,7 +144,7 @@ public class RuleList {
                     }
                 }
             }
-            
+            System.out.println("CREDITS: "+ credits + " NUMBER: " + number);
             return credits >= number;
         }  
         
@@ -191,7 +191,7 @@ public class RuleList {
             for(String crule: this.set) {
                 int cnum = Integer.parseInt(crule);
                 for(String rule: set) {
-                    int num = Integer.parseInt(rule.substring(5));
+                    int num = Integer.parseInt(rule.substring(4));
                     if(num >= cnum)
                         intersection.add(rule);
                 }

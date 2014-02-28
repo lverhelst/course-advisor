@@ -149,6 +149,10 @@ public class CourseList {
         return this.unbccourses.values().toArray(new Course[unbccourses.values().size()]);
     }
     
+    public String[] getCourseNames(){
+        return this.unbccourses.keySet().toArray(new String[unbccourses.keySet().size()]);
+    }
+    
     /**
      * Used to get an array of courses which have been set to taken
      * @return an array of courses which have been taken

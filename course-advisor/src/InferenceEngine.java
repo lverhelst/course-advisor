@@ -81,33 +81,66 @@ public class InferenceEngine {
                 //If the user has not satisfied a rule
                 String[] factsKeySet = new String[facts.keySet().size()];
                 if(!rule.check(facts.keySet().toArray(factsKeySet))){
-                    //add next available course from rule set
-                    for(String course : rule.getSet()){
-                        //If we haven't already suggested this course
-                        if(!facts.containsKey("cr:" + course)){
-                            //Check if we can take the course
-                            boolean canTake = false;
-                            //This for loop loops n times (max) to get 1 course rule (super silly)
-                            for(CourseRule cr : rules) {
-                               //check prereqs for the rule resulting in this course
-                                if(cr.getAction().getValue().equals(course)){   
-                                    //if(cr.check()) {  //
-                                    if(cr.stringCheck(cr.prereqString)) {                  
-                                        canTake = true; 
-                                        break;
+                    if(rule.getType().toLowerCase().equals("normal")){
+                        //add next available course from rule set
+                        for(String course : rule.getSet()){
+                            //If we haven't already suggested this course
+                            if(!facts.containsKey("cr:" + course)){
+                                //Check if we can take the course
+                                boolean canTake = false;
+                                //This for loop loops n times (max) to get 1 course rule (super silly)
+                                for(CourseRule cr : rules) {
+                                   //check prereqs for the rule resulting in this course
+                                    if(cr.getAction().getValue().equals(course)){   
+                                        //if(cr.check()) {  //
+                                        if(cr.stringCheck(cr.prereqString)) {                  
+                                            canTake = true; 
+                                            break;
+                                        }
                                     }
                                 }
-                            }
-                            if(canTake)
-                            {
-                                //Add to facts, break out so that we don't add extra
-                                facts.put("cr:" + course, new Fact("cr", course));                                
-                                System.out.println("Adding priority course: " + course + " from rule: " + rule.getName());                                
-                                session.addCourse(courseList.get(course).getAcademic_Year(), courseList.get(course)); 
-                                applied_a_rule = true;
-                                break;
-                            }
-                       }
+                                if(canTake)
+                                {
+                                    //Add to facts, break out so that we don't add extra
+                                    facts.put("cr:" + course, new Fact("cr", course));                                
+                                    System.out.println("Adding priority course: " + course + " from rule: " + rule.getName());                                
+                                    session.addCourse(courseList.get(course).getAcademic_Year(), courseList.get(course)); 
+                                    applied_a_rule = true;
+                                    break;
+                                }
+                           }
+                        }
+                    }else{
+                          //rule type : level
+                        //add next available course from rule set
+                        
+                        for(String course : rule.intersect(courseList.getCourseNames())){
+                            //If we haven't already suggested this course
+                            if(!facts.containsKey("cr:" + course)){
+                                //Check if we can take the course
+                                boolean canTake = false;
+                                //This for loop loops n times (max) to get 1 course rule (super silly)
+                                for(CourseRule cr : rules) {
+                                   //check prereqs for the rule resulting in this course
+                                    if(cr.getAction().getValue().equals(course)){   
+                                        //if(cr.check()) {  //
+                                        if(cr.stringCheck(cr.prereqString)) {                  
+                                            canTake = true; 
+                                            break;
+                                        }
+                                    }
+                                }
+                                if(canTake)
+                                {
+                                    //Add to facts, break out so that we don't add extra
+                                    facts.put("cr:" + course, new Fact("cr", course));                                
+                                    System.out.println("Adding priority course: " + course + " from rule: " + rule.getName());                                
+                                    session.addCourse(courseList.get(course).getAcademic_Year(), courseList.get(course)); 
+                                    applied_a_rule = true;
+                                    break;
+                                }
+                           }
+                        }
                     }
                 }
             }
@@ -196,7 +229,6 @@ public class InferenceEngine {
          * @return result
          */
         public boolean stringCheck(String prestring){
-            System.out.println("PRESTRING: " + prestring);
             //Case when 0 tokens (no prereqs)
             if(prestring == null || prestring.equals(""))
                 return true;
@@ -212,8 +244,6 @@ public class InferenceEngine {
                     remainder += "," + tokens[i];
                 }
                 //grab first three tokens
-                
-                System.out.println("TOKENS : " + tokens[0] + " " + tokens[1] + " " + tokens[2]);
                 switch(tokens[1]){
                     
                     case "OR":
