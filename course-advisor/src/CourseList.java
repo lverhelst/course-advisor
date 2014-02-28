@@ -72,10 +72,13 @@ public class CourseList {
                             if(!s.endsWith("115")){
                                 if(!s.equals("AND") && !s.equals("OR"))
                                     course.addPrereq(s);
-                                prestring+=s;
+                                prestring+=s + ",";
                             } 
                         }
-                        course.preString = prestring;
+                        if(prestring.length() > 2)
+                            course.preString = prestring.substring(0, prestring.length() - 1);
+                        else
+                            course.preString = "";
                     }
                 }
                 unbccourses.put(component[0], course);

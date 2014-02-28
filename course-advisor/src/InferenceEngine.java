@@ -206,32 +206,35 @@ public class InferenceEngine {
                 return true;
             if(prestring.equals("FALSE"))
                 return false;
-            String[] tokens = prestring.toUpperCase().split("OR|AND");
+            String[] tokens = prestring.toUpperCase().split(",");
             if(tokens.length > 1){
                 String remainder = "";
                 for(int i = 3; i < tokens.length; i++){
-                    remainder += tokens[i];
+                    remainder += "," + tokens[i];
                 }
                 //grab first three tokens
+                
+                System.out.println("TOKENS : " + tokens[0] + " " + tokens[1] + " " + tokens[2]);
                 switch(tokens[1]){
+                    
                     case "OR":
-                        if(facts.containsKey(tokens[0]) || facts.containsKey(tokens[2])){
+                        if(tokens[0].equals("TRUE") || facts.containsKey("cr:" + tokens[0]) || facts.containsKey("cr:" + tokens[2])){
                             return this.stringCheck("TRUE" + remainder);
                         }else{
                              return this.stringCheck("FALSE" + remainder);
                         }
                     case "AND":
-                        if(facts.containsKey(tokens[0]) && facts.containsKey(tokens[2])){  
+                        if((tokens[0].equals("TRUE") || facts.containsKey("cr:" + tokens[0])) && facts.containsKey("cr:" + tokens[2])){  
                             return this.stringCheck("TRUE" + remainder);
                         }else{
                             return this.stringCheck("FALSE" + remainder);
                         }
                     default:
-                        return this.stringCheck("FALSE");
+                        return this.stringCheck("FALSE"); //This should never be executed
                 }
             }else{    
                 //case when 1 prereq
-                return facts.containsKey(tokens[0]); 
+                return facts.containsKey("cr:" + tokens[0]); 
             }
         }
         
