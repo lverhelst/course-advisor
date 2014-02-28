@@ -51,7 +51,7 @@ public class Session {
      * @param year the suggested academic year for the course
      * @param course the course itself
      */
-    public void addCourse(int year, Course course){
+    public boolean addCourse(int year, Course course){
         boolean placed = false;
         int semester = (year - 1) * 2; // 0-index the semester, set to years
        // System.out.println(course.getName());
@@ -63,7 +63,7 @@ public class Session {
                 if(semesters[semester][i] == null){
                    semesters[semester][i] = course;
                    credit_hours += course.getCredits();
-                   return;
+                   return true;
                }else{
                    //if a prerequisite of this course is in the current semester, break (do not add)
                    if(course.getPrereqs().contains(semesters[semester][i].getName()))
@@ -75,6 +75,7 @@ public class Session {
            } 
            semester++; 
         }
+        return placed;
     }
     
     /**
