@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -155,9 +154,9 @@ public class BannerConnect {
                                                     output += blah.substring(14);
                                                 } else if(blah.contains("<A HREF")) {
                                                     if(blah.contains("or"))
-                                                        output += "OR";
+                                                        output += ",OR,";
                                                     else if(blah.contains("and"))
-                                                        output += "AND";
+                                                        output += ",AND,";
                                                 }  
                                         }
                                         break;
