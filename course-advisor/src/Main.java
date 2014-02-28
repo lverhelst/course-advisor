@@ -22,8 +22,8 @@ public class Main {
             System.out.println(session.printSemesters());
         }
         
-        BannerConnect bc = new BannerConnect();
-        bc.update();
+        //BannerConnect bc = new BannerConnect();
+        //bc.update();
         
         //start HUI
         //Launch Application    

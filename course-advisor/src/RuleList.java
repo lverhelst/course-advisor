@@ -102,14 +102,12 @@ public class RuleList {
         @Override
         public boolean check(String[] set) {
             int matched = 0;
-            
             for(String crule: this.set) {
                 for(String rule: set) {
                     if(crule.equals(rule.split(":")[1]))
                         matched++;
                 }
             }
-            
             return matched >= number;
         }  
         
@@ -136,14 +134,12 @@ public class RuleList {
          */
         private ArrayList<String> intersectNorm(String[] set) {
             ArrayList<String> intersection = new ArrayList();
-            
             for(String crule: this.set) {
                 for(String rule: set) {
                     if(crule.equals(crule))
                         intersection.add(rule);
                 }
             }
-            
             return intersection;
         }
         

@@ -121,8 +121,7 @@ public class InferenceEngine {
             //FORWARD CHAINING ON COURSES 
             //DO THIS SECOND
             for(CourseRule rule : rules) {
-                
-                
+               
                 //if(rule.check()) {  //
                 if(rule.stringCheck(rule.prereqString)) {                  
                     Fact fire = rule.getAction();
