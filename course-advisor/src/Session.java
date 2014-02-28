@@ -60,11 +60,17 @@ public class Session {
                break;
            
            for(int i = 0; i < semesters[semester].length; i++){
-               if(semesters[semester][i] == null){
+                if(semesters[semester][i] == null){
                    semesters[semester][i] = course;
                    credit_hours += course.getCredits();
                    return;
-               }
+               }else{
+                //if a prerequisite of this course is in the current semester, break (do not add)
+               if(course.getPrereqs().contains(semesters[semester][i].getName()))
+               {
+                   System.out.println("INCREMENT SEMESTER");
+                   break;
+               }}
            } 
            semester++; 
         }
