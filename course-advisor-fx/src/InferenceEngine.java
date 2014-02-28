@@ -20,18 +20,21 @@ public class InferenceEngine {
     
     private Session session;
     private CourseList courseList;
+    private RuleList ruleList;
     
     /**
      * Default constructor sets up and initializes the inference engine
      * @param current_Session the current session (facts)
-     * @param cl the list of courses (rules)
+     * @param cl the list of courses (course_rules)
+     * @param rl the list of rules (degree_rules)
      */
-    public InferenceEngine(Session current_Session, CourseList cl){
+    public InferenceEngine(Session current_Session, CourseList cl, RuleList rl){
         rules = new ArrayList();
         facts = new HashMap();
         
         this.session = current_Session;
         this.courseList = cl;
+        this.ruleList = rl;
         
         //loads the prereq rules
         this.loadRules();
