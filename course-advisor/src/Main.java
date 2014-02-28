@@ -17,9 +17,19 @@ public class Main {
             //session.setInitialCourses(initialCourses);
             InferenceEngine ie = new InferenceEngine(session, cl, rl);
             session = ie.infer();
+            //Print if rules passed
             
-            System.out.println("Credit hours: " + session.credit_hours + "/120 = " + (float)session.credit_hours/120 * 100 + "%");
+             System.out.println("Credit hours: " + session.credit_hours + "/120 = " + (float)session.credit_hours/120 * 100 + "%");
             System.out.println(session.printSemesters());
+            
+            for(Rule rule : rl.getRuleSet()){
+                    //If the user has not satisfied a rule
+                    String[] factsKeySet = new String[ie.facts.keySet().size()];
+                    System.out.println(rule.getName() + ": " + ((rule.check(ie.facts.keySet().toArray(factsKeySet)))?"PASSED" : "FAILED"));
+            }
+        
+            
+           
         }
         
         //BannerConnect bc = new BannerConnect();

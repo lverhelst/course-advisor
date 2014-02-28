@@ -117,6 +117,10 @@ public class RuleList {
          * @return true if the rule passes
          */
         private boolean checkNorm(String[] set) {
+           
+            //if(this.name.equals("English Requirement"))
+            // System.out.println(this.name + number);
+            
             int matched = 0;
             for(String crule: this.set) {
                 for(String rule: set) {
@@ -142,12 +146,13 @@ public class RuleList {
                 for(String rule: set) {
                     int num = Integer.parseInt(rule.substring(7));
                     String subject = rule.substring(3,7);
-                    if(csubject.equals("NULL") || csubject.equals(subject) && num >= cnum) {
+                    
+                    if((csubject.equals("NULL") || csubject.equals(subject)) && num >= cnum) {
                         credits += 3;
                     }
                 }
             }
-            System.out.println("CUBJECT " + "CREDITS: "+ credits + " NUMBER: " + number);
+            //System.out.println("CUBJECT " + "CREDITS: "+ credits + " NUMBER: " + number);
             return credits >= number;
         }  
         
@@ -176,7 +181,7 @@ public class RuleList {
             ArrayList<String> intersection = new ArrayList();
             for(String crule: this.set) {
                 for(String rule: set) {
-                    if(crule.equals(crule))
+                    if(crule.equals(rule.split(":")[1]))
                         intersection.add(rule);
                 }
             }
@@ -199,7 +204,7 @@ public class RuleList {
                     int num = Integer.parseInt(rule.substring(4));
                     String subject = rule.substring(0,4);
                     
-                    if(csubject.equals("NULL") || csubject.equals(subject) && num >= cnum)
+                    if((csubject.equals("NULL") || csubject.equals(subject)) && num >= cnum)
                         intersection.add(rule);
                 }
             }

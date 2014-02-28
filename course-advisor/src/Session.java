@@ -68,7 +68,7 @@ public class Session {
                    //if a prerequisite of this course is in the current semester, break (do not add)
                    if(course.getPrereqs().contains(semesters[semester][i].getName()))
                    {
-                       System.out.println("INCREMENT SEMESTER");
+                      // System.out.println("INCREMENT SEMESTER");
                        break;
                    }
                }

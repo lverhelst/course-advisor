@@ -16,7 +16,7 @@ public class InferenceEngine {
     
     //Example RULE: CPSC300 + 60CreditHours  => CPSC 400    p
     private ArrayList<CourseRule> rules;
-    private HashMap<String, Fact> facts;
+    public HashMap<String, Fact> facts;
     
     private Session session;
     private CourseList courseList;
@@ -144,7 +144,6 @@ public class InferenceEngine {
                     }
                 }
             }
-            
         }
         applied_a_rule = false; //TODO: change to TRUE to enable electives!
         while(session.credit_hours < TOTAL_REQUIRED_CREDIT_HOURS && applied_a_rule){
@@ -168,6 +167,8 @@ public class InferenceEngine {
                 }
             }
         }
+                
+        
         return session;
     }
     
