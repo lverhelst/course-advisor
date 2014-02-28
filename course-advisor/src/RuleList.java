@@ -99,7 +99,7 @@ public class RuleList {
             
             for(String crule: this.set) {
                 for(String rule: set) {
-                    if(crule.equals(crule))
+                    if(crule.equals(rule))
                         matched++;
                 }
             }
