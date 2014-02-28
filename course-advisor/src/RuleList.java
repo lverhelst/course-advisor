@@ -197,7 +197,7 @@ public class RuleList {
                 
                 for(String rule: set) {
                     int num = Integer.parseInt(rule.substring(4));
-                    String subject = rule.substring(3,7);
+                    String subject = rule.substring(0,4);
                     
                     if(csubject.equals("NULL") || csubject.equals(subject) && num >= cnum)
                         intersection.add(rule);
