@@ -14,9 +14,11 @@ import java.util.HashMap;
 public class InferenceEngine {
     private final int TOTAL_REQUIRED_CREDIT_HOURS = 120;
     
+    private boolean include_specialized_topics = false;
+    
     //Example RULE: CPSC300 + 60CreditHours  => CPSC 400    p
     private ArrayList<CourseRule> rules;
-    public HashMap<String, Fact> facts;
+    private HashMap<String, Fact> facts;
     
     private Session session;
     private CourseList courseList;
@@ -77,16 +79,18 @@ public class InferenceEngine {
         //to choose from
         while(session.credit_hours <= TOTAL_REQUIRED_CREDIT_HOURS && applied_a_rule){
             //BACKWARDS CHAINING!
-            for(Rule rule : ruleList.getRuleSet()){
+            for(Rule rule : ruleList.getRuleSetArray()){
+                System.out.println("Applying " + rule.getType().toLowerCase() + " rule : " + rule.getName());
                 applied_a_rule = true;
                 //Completely apply each rule one at a time
                 while(applied_a_rule){
                     applied_a_rule = false;
                     //If the user has not satisfied a rule (ensure that the rule isn't already satisfied)
-                    String[] factsKeySet = new String[facts.keySet().size()];
+                    String[] factsKeySet = new String[getFacts().keySet().size()];
                     if(!rule.check(facts.keySet().toArray(factsKeySet))){
                         //rule type: normal
                         if(rule.getType().toLowerCase().equals("normal")){
+                             
                             //add next available course from rule set
                             for(String course : rule.getSet()){
                                 if(tryApplyCourse(course, rule.getType().toLowerCase())){
@@ -131,23 +135,28 @@ public class InferenceEngine {
                     //ensure that 100 and 110 courses are not added to the same session
                     boolean special = false;
                     if(fire.getValue().endsWith("100")){
-                        special = facts.containsKey(fire.getValue().substring(0, 4) + "110");
+                        special = getFacts().containsKey(fire.getValue().substring(0, 4) + "110");
                     }
-                    if(fire.getValue().endsWith("110")){
-                        special = facts.containsKey(fire.getValue().substring(0, 4) + "100");
+                    else if(fire.getValue().endsWith("110")){
+                        special = getFacts().containsKey(fire.getValue().substring(0, 4) + "100");
+                    }
+                    //filter out specialized courses if requested
+                    if(!include_specialized_topics){
+                        special = Integer.parseInt(fire.getValue().substring(fire.getValue().length() - 2, fire.getValue().length())) >= 90;
                     }
                     
                     if(!facts.containsKey(fire.toString()) && !special) {                
                       //  System.out.println("Adding non-priority course: " + fire.getValue());      
                         if(session.addCourse(courseList.get(fire.getValue()).getAcademic_Year(), courseList.get(fire.getValue()))){
-                            facts.put(fire.toString(), fire);
+                            getFacts().put(fire.toString(), fire);
                             applied_a_rule = true;
                         }
+                    }else{
+                        if(special)
+                            System.out.println("Course skipped: " + fire.toString());
                     }
                 }
-              
             }
-            
         }
         return session;
     }
@@ -158,9 +167,13 @@ public class InferenceEngine {
         //ensure that 100 and 110 courses are not added to the same session
         boolean special = false;
         if(course_name.endsWith("100")){
-            special = facts.containsKey("cr:" + course_name.substring(0, 4) + "110");
+            special = getFacts().containsKey("cr:" + course_name.substring(0, 4) + "110");
         }else if(course_name.endsWith("110")){
-            special = facts.containsKey("cr: " + course_name.substring(0, 4) + "100");
+            special = getFacts().containsKey("cr: " + course_name.substring(0, 4) + "100");
+        }
+        //filter out specialized courses if requested
+        if(!include_specialized_topics){
+            special = Integer.parseInt(course_name.substring(course_name.length() - 2, course_name.length())) >= 90;
         }
         if(!facts.containsKey("cr:" + course_name) && !special){
             //Check if we can take the course
@@ -184,12 +197,36 @@ public class InferenceEngine {
             {       
                
                 if(session.addCourse(courseList.get(course_name).getAcademic_Year(), courseList.get(course_name))) {
-                    facts.put("cr:" + course_name, new Fact("cr", course_name));   
+                    getFacts().put("cr:" + course_name, new Fact("cr", course_name));   
                     return true;
                 }
             }
-       }
+       }else{
+             if(special)
+                System.out.println("Course skipped: " + course_name);
+        }
        return false;
+    }
+
+    /**
+     * @return the facts
+     */
+    public HashMap<String, Fact> getFacts() {
+        return facts;
+    }
+
+    /**
+     * @return the include_specialized_topics
+     */
+    public boolean isInclude_specialized_topics() {
+        return include_specialized_topics;
+    }
+
+    /**
+     * @param include_specialized_topics the include_specialized_topics to set
+     */
+    public void setInclude_specialized_topics(boolean include_specialized_topics) {
+        this.include_specialized_topics = include_specialized_topics;
     }
     
     /**
@@ -234,7 +271,7 @@ public class InferenceEngine {
                 return true;
             for(Fact fact: premises) {
                 if(fact != null && premise)
-                    premise &= facts.containsKey(fact.toString());
+                    premise &= getFacts().containsKey(fact.toString());
                 else //invalid course???
                     return false;
             }
@@ -265,13 +302,13 @@ public class InferenceEngine {
                 switch(tokens[1]){
                     
                     case "OR":
-                        if(tokens[0].equals("TRUE") || facts.containsKey("cr:" + tokens[0]) || facts.containsKey("cr:" + tokens[2])){
+                        if(tokens[0].equals("TRUE") || getFacts().containsKey("cr:" + tokens[0]) || getFacts().containsKey("cr:" + tokens[2])){
                             return this.stringCheck("TRUE" + remainder);
                         }else{
                              return this.stringCheck("FALSE" + remainder);
                         }
                     case "AND":
-                        if((tokens[0].equals("TRUE") || facts.containsKey("cr:" + tokens[0])) && facts.containsKey("cr:" + tokens[2])){  
+                        if((tokens[0].equals("TRUE") || getFacts().containsKey("cr:" + tokens[0])) && getFacts().containsKey("cr:" + tokens[2])){  
                             return this.stringCheck("TRUE" + remainder);
                         }else{
                             return this.stringCheck("FALSE" + remainder);
@@ -281,7 +318,7 @@ public class InferenceEngine {
                 }
             }else{    
                 //case when 1 prereq
-                return facts.containsKey("cr:" + tokens[0]); 
+                return getFacts().containsKey("cr:" + tokens[0]); 
             }
         }
         

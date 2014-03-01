@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 public class RuleList {
     private HashMap<String, Rule> ruleset;
-    
+    private ArrayList<Rule> rulesetArray;
      /**
       * Used to load a list of rules from the file passed into the method
       * Format Name!Type!Set!Number
@@ -24,6 +24,7 @@ public class RuleList {
       */
     public boolean loadRuleList(String filename){
         ruleset = new HashMap();
+        rulesetArray = new ArrayList<>();
         BufferedReader br;
         
         try{
@@ -41,6 +42,7 @@ public class RuleList {
                 number = Integer.parseInt(parts[3]);
                 GradRule rule = new GradRule(parts[0], parts[1], number, set);
                 ruleset.put(rule.name, rule);
+                rulesetArray.add(rule);
                 line = br.readLine();
             }
             br.close();
@@ -69,6 +71,13 @@ public class RuleList {
      */
     public Rule getRule(String ruleName) {
         return ruleset.get(ruleName);
+    }
+
+    /**
+     * @return the rulesetArray
+     */
+    public ArrayList<Rule> getRuleSetArray() {
+        return rulesetArray;
     }
     
     /**

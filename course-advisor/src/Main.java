@@ -24,6 +24,7 @@ public class Main {
             Session session = new Session(5);          
            // session.setInitialCourses(initialCourses);
             InferenceEngine ie = new InferenceEngine(session, cl, rl, interests);
+            ie.setInclude_specialized_topics(false);
             session = ie.inferDegreeRequirements();
             session = ie.inferElectives();
             
@@ -37,11 +38,10 @@ public class Main {
                     i++;
                 }
             }
-
-            for(Rule rule : rl.getRuleSet()){
-                    //If the user has not satisfied a rule
-                    String[] factsKeySet = new String[ie.facts.keySet().size()];
-                    System.out.println(rule.getName() + ": " + ((rule.check(ie.facts.keySet().toArray(factsKeySet)))?"PASSED" : "FAILED"));
+            //If the user has not satisfied a rule
+            String[] factsKeySet = new String[ie.getFacts().keySet().size()];
+            for(Rule rule : rl.getRuleSetArray()){ 
+                    System.out.println(rule.getName() + ": " + ((rule.check(ie.getFacts().keySet().toArray(factsKeySet))) ? "PASSED" : "FAILED"));
             }
             System.out.println("120 credit hour requirment: (" + session.credit_hours + ") " +((float)session.credit_hours/120 * 100 >= 100 ? "PASSED" : "FAILED"));
             System.out.println("20 CPSC Course Requirement: (" + i + ") " + ((i >= 20)? "PASSED" : "FAILED"));
@@ -49,10 +49,6 @@ public class Main {
         
         //BannerConnect bc = new BannerConnect();
         //bc.update();
-        
-        //start HUI
-        //Launch Application    
-	//Application.launch(HUI.class);
     }
     
 }
