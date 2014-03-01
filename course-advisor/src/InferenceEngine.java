@@ -128,7 +128,16 @@ public class InferenceEngine {
                 if(rule.check()) {  //
                 //if(rule.stringCheck(rule.prereqString)) {                  
                     Fact fire = rule.getAction();
-                    if(!facts.containsKey(fire.toString())) {                
+                    //ensure that 100 and 110 courses are not added to the same session
+                    boolean special = false;
+                    if(fire.getValue().endsWith("100")){
+                        special = facts.containsKey(fire.getValue().substring(0, 4) + "110");
+                    }
+                    if(fire.getValue().endsWith("110")){
+                        special = facts.containsKey(fire.getValue().substring(0, 4) + "100");
+                    }
+                    
+                    if(!facts.containsKey(fire.toString()) && !special) {                
                       //  System.out.println("Adding non-priority course: " + fire.getValue());      
                         if(session.addCourse(courseList.get(fire.getValue()).getAcademic_Year(), courseList.get(fire.getValue()))){
                             facts.put(fire.toString(), fire);
@@ -146,7 +155,14 @@ public class InferenceEngine {
     
     private boolean tryApplyCourse(String course_name, String rule_type){
         //If we haven't already suggested this course
-        if(!facts.containsKey("cr:" + course_name)){
+        //ensure that 100 and 110 courses are not added to the same session
+        boolean special = false;
+        if(course_name.endsWith("100")){
+            special = facts.containsKey("cr:" + course_name.substring(0, 4) + "110");
+        }else if(course_name.endsWith("110")){
+            special = facts.containsKey("cr: " + course_name.substring(0, 4) + "100");
+        }
+        if(!facts.containsKey("cr:" + course_name) && !special){
             //Check if we can take the course
             boolean canTake = false;
             //This for loop loops n times (max) to get 1 course rule (super silly)
@@ -165,7 +181,8 @@ public class InferenceEngine {
                 }
             }
             if(canTake)
-            {                       
+            {       
+               
                 if(session.addCourse(courseList.get(course_name).getAcademic_Year(), courseList.get(course_name))) {
                     facts.put("cr:" + course_name, new Fact("cr", course_name));   
                     return true;
