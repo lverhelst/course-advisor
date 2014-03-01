@@ -5,10 +5,10 @@ import java.util.HashMap;
 /**
  * @author Leon Verhelst and Emery Berg
  An Inference Engine applies rules to facts stored in the knowledge base
- Our inference engine uses forward-chaining, that is, it starts from the given facts 
+ Our inferDegreeRequirementsence engine uses forward-chaining, that is, it starts from the given facts 
  and applies its rules, asserts new facts and re-runs until it has reached a goal.
  
- The inference engine is limited to rules that us a single premise, or a list of ANDed premises
+ The inferDegreeRequirementsence engine is limited to rules that us a single premise, or a list of ANDed premises
  */
 
 public class InferenceEngine {
@@ -21,21 +21,22 @@ public class InferenceEngine {
     private Session session;
     private CourseList courseList;
     private RuleList ruleList;
+    private ArrayList<String> interests;
     
     /**
-     * Default constructor sets up and initializes the inference engine
+     * Default constructor sets up and initializes the inferDegreeRequirementsence engine
      * @param current_Session the current session (facts)
      * @param cl the list of courses (course_rules)
      * @param rl the list of rules (degree_rules)
      */
-    public InferenceEngine(Session current_Session, CourseList cl, RuleList rl){
+    public InferenceEngine(Session current_Session, CourseList cl, RuleList rl, ArrayList<String> interests){
         rules = new ArrayList();
         facts = new HashMap();
         
         this.session = current_Session;
         this.courseList = cl;
         this.ruleList = rl;
-        
+        this.interests = interests;
         //loads the prereq rules
         this.loadRules();
         
@@ -48,7 +49,7 @@ public class InferenceEngine {
     }
     
     /**
-     * used to load the rules to be used in the inference engine
+     * used to load the rules to be used in the inferDegreeRequirementsence engine
      */
     private void loadRules(){
         //Load Course Prerequisite Rules EX: CourseA+CourseB=>CourseC
@@ -68,101 +69,66 @@ public class InferenceEngine {
     /**
      * Performs forward chaining in order to find what courses should be taken
  based on the current rules and selected courses
-     * @return the inference session for the user
+     * @return the inferDegreeRequirementsence session for the user
      */
-    public Session infer(){
+    public Session inferDegreeRequirements(){
         boolean applied_a_rule = true;
         //Stop when the number of credits are satisfied, or there are no more courses
         //to choose from
-        while(session.credit_hours < TOTAL_REQUIRED_CREDIT_HOURS && applied_a_rule){
-            applied_a_rule = false;
+        while(session.credit_hours <= TOTAL_REQUIRED_CREDIT_HOURS && applied_a_rule){
             //BACKWARDS CHAINING!
             for(Rule rule : ruleList.getRuleSet()){
-                //If the user has not satisfied a rule
-                String[] factsKeySet = new String[facts.keySet().size()];
-                if(!rule.check(facts.keySet().toArray(factsKeySet))){
-                    if(rule.getType().toLowerCase().equals("normal")){
-                        //add next available course from rule set
-                        for(String course : rule.getSet()){
-                            //If we haven't already suggested this course
-                            if(!facts.containsKey("cr:" + course)){
-                                //Check if we can take the course
-                                boolean canTake = false;
-                                //This for loop loops n times (max) to get 1 course rule (super silly)
-                                for(CourseRule cr : rules) {
-                                   //check prereqs for the rule resulting in this course
-                                    if(cr.getAction().getValue().equals(course)){   
-                                        //if(cr.check()) {  //
-                                        if(cr.stringCheck(cr.prereqString)) {                  
-                                            canTake = true; 
-                                            break;
-                                        }
-                                    }
-                                }
-                                if(canTake)
-                                {
-                                    //Add to facts, break out so that we don't add extra
-                                                               
-                                    System.out.println("Adding priority course: " + course + " from rule: " + rule.getName());                                
-                                    if(session.addCourse(courseList.get(course).getAcademic_Year(), courseList.get(course))){
-                                         facts.put("cr:" + course, new Fact("cr", course));    
-                                        applied_a_rule = true;
-                                    }
+                applied_a_rule = true;
+                //Completely apply each rule one at a time
+                while(applied_a_rule){
+                    applied_a_rule = false;
+                    //If the user has not satisfied a rule (ensure that the rule isn't already satisfied)
+                    String[] factsKeySet = new String[facts.keySet().size()];
+                    if(!rule.check(facts.keySet().toArray(factsKeySet))){
+                        //rule type: normal
+                        if(rule.getType().toLowerCase().equals("normal")){
+                            //add next available course from rule set
+                            for(String course : rule.getSet()){
+                                if(tryApplyCourse(course, rule.getType().toLowerCase())){
+                                    applied_a_rule = true;
                                     break;
                                 }
-                           }
-                        }
-                    }else{
-                          //rule type : level
-                        //add next available course from rule set
-                        
-                        for(String course : rule.intersect(courseList.getCourseNames())){
-                            //If we haven't already suggested this course
-                            if(!facts.containsKey("cr:" + course)){
-                                //Check if we can take the course
-                                boolean canTake = false;
-                                //This for loop loops n times (max) to get 1 course rule (super silly)
-                                for(CourseRule cr : rules) {
-                                   //check prereqs for the rule resulting in this course
-                                    if(cr.getAction().getValue().equals(course)){   
-                                        //if(cr.check()) {  //
-                                        if(cr.stringCheck(cr.prereqString)) {                  
-                                            canTake = true; 
-                                            break;
-                                        }
-                                    }
-                                }
-                                if(canTake)
-                                {
-                                    //Add to facts, break out so that we don't add extra
-                                                                 
-                                    System.out.println("Adding priority course: " + course + " from rule: " + rule.getName());                                
-                                    if(session.addCourse(courseList.get(course).getAcademic_Year(), courseList.get(course))) {
-                                        facts.put("cr:" + course, new Fact("cr", course));   
-                                        applied_a_rule = true;
-                                    }
+                            }
+                        }else{
+                            //rule type : level
+                            //add next available course from rule set
+                            for(String course : rule.intersect(courseList.getCourseNames())){
+                                if(tryApplyCourse(course, rule.getType().toLowerCase())){
+                                    applied_a_rule = true;
                                     break;
                                 }
-                           }
+                            }
                         }
                     }
                 }
             }
         }
-        applied_a_rule = false; //TODO: change to TRUE to enable electives!
-        while(session.credit_hours < TOTAL_REQUIRED_CREDIT_HOURS && applied_a_rule){
+        return session;
+    }
+    
+    public Session inferElectives(){
+        boolean applied_a_rule = true; //TODO: change to TRUE to enable electives!
+        while((session.credit_hours <= TOTAL_REQUIRED_CREDIT_HOURS) && applied_a_rule){
             applied_a_rule = false;
-            
             //checks if rule is valid and if it is, fires the rule
             //FORWARD CHAINING ON COURSES 
             //DO THIS SECOND
             for(CourseRule rule : rules) {
+                if(session.credit_hours >= TOTAL_REQUIRED_CREDIT_HOURS)
+                        break;
+                //skip rule if it isn't in the student's interests
+                if(!interests.contains(rule.action.getValue().substring(0, 4))){
+                    continue;
+                } 
                 if(rule.check()) {  //
                 //if(rule.stringCheck(rule.prereqString)) {                  
                     Fact fire = rule.getAction();
-                    if(!facts.containsKey(fire.toString())) {
-                        
-                                             
+                    if(!facts.containsKey(fire.toString())) {                
                       //  System.out.println("Adding non-priority course: " + fire.getValue());      
                         if(session.addCourse(courseList.get(fire.getValue()).getAcademic_Year(), courseList.get(fire.getValue()))){
                             facts.put(fire.toString(), fire);
@@ -170,11 +136,43 @@ public class InferenceEngine {
                         }
                     }
                 }
+              
             }
+            
         }
-                
-        
         return session;
+    }
+    
+    
+    private boolean tryApplyCourse(String course_name, String rule_type){
+        //If we haven't already suggested this course
+        if(!facts.containsKey("cr:" + course_name)){
+            //Check if we can take the course
+            boolean canTake = false;
+            //This for loop loops n times (max) to get 1 course rule (super silly)
+            for(CourseRule cr : rules) {
+                //skip rule if it isn't in the student's interests, and its not a normal rule type (course isn't explicitly required)
+                if(!interests.contains(cr.action.getValue().substring(0, 4)) && !rule_type.equals("normal")){
+                    continue;
+                }
+               //check prereqs for the rule resulting in this course
+                if(cr.getAction().getValue().equals(course_name)){   
+                    //if(cr.check()) {  //
+                    if(cr.stringCheck(cr.prereqString)) {                  
+                        canTake = true; 
+                        break;
+                    }
+                }
+            }
+            if(canTake)
+            {                       
+                if(session.addCourse(courseList.get(course_name).getAcademic_Year(), courseList.get(course_name))) {
+                    facts.put("cr:" + course_name, new Fact("cr", course_name));   
+                    return true;
+                }
+            }
+       }
+       return false;
     }
     
     /**
