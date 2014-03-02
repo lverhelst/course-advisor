@@ -39,7 +39,22 @@ public class GUIMain extends javax.swing.JFrame {
             for(String course: courses) 
                 model.addElement(course);
         }
-        
+        return model;
+    }
+    
+    /**
+     * Loads and binds the Interests (Degrees Ex CPSC, ANTH) to the interests course list
+     * @return the listmodel with the degree four-letter acronym stored in it
+     */
+    public DefaultListModel loadInterests(){
+        DefaultListModel<String> model = new DefaultListModel();
+        if(cl.loadCourseList()) {
+            String[] courses = cl.getCourseNames();
+            Arrays.sort(courses);
+            for(String course: courses) 
+                if(model.indexOf(course.substring(0, 4)) == -1)
+                    model.addElement(course.substring(0, 4));
+        }
         return model;
     }
 
@@ -80,11 +95,7 @@ public class GUIMain extends javax.swing.JFrame {
         jList2.setModel(loadCourses());
         jScrollPane2.setViewportView(jList2);
 
-        jList3.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
+        jList3.setModel(loadInterests());
         jScrollPane3.setViewportView(jList3);
 
         jLabel4.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N

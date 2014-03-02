@@ -126,7 +126,7 @@ public class InferenceEngine {
                 if(session.credit_hours >= TOTAL_REQUIRED_CREDIT_HOURS)
                         break;
                 //skip rule if it isn't in the student's interests
-                if(!interests.contains(rule.action.getValue().substring(0, 4))){
+                if(interests != null && interests.size() > 0 && !interests.contains(rule.action.getValue().substring(0, 4))){
                     continue;
                 } 
                 if(rule.check()) {  //
@@ -181,7 +181,7 @@ public class InferenceEngine {
             //This for loop loops n times (max) to get 1 course rule (super silly)
             for(CourseRule cr : rules) {
                 //skip rule if it isn't in the student's interests, and its not a normal rule type (course isn't explicitly required)
-                if(!interests.contains(cr.action.getValue().substring(0, 4)) && !rule_type.equals("normal")){
+                if(interests != null && interests.size() > 0 &&!interests.contains(cr.action.getValue().substring(0, 4)) && !rule_type.equals("normal")){
                     continue;
                 }
                //check prereqs for the rule resulting in this course
