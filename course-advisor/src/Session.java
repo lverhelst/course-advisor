@@ -26,9 +26,12 @@ public class Session {
         int courses = semesters[0].length;
         
         for(int i = 0; i < initCourses.length; ++i) {
+                
                 System.out.println("ADDING INITIAL COURSE: " +  initCourses[i] + " to: "+ (int)i/courses + "," +  i % courses);
-                semesters[(i/courses)][ i % courses] = initCourses[i];  
-                this.credit_hours += initCourses[i].getCredits();
+                if(initCourses[i] != null){
+                    semesters[(i/courses)][ i % courses] = initCourses[i];  
+                    this.credit_hours += initCourses[i].getCredits();
+                }
         }        
     }
     
