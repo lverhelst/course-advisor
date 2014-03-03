@@ -332,6 +332,7 @@ public class GUIMain extends javax.swing.JFrame {
         //get interests by name
         ArrayList<String> interests = new ArrayList<String>();
         jTextArea1.setText(jTextArea1.getText() + "\r\n\r\nUser has interest in the following degrees: ");
+        
         for(int i = 0; i < jTable3.getRowCount(); i++){
             //if selected
             if((Boolean)jTable3.getValueAt(i, 1)){
@@ -339,6 +340,8 @@ public class GUIMain extends javax.swing.JFrame {
                 interests.add((String)jTable3.getValueAt(i,0));
             }
         }
+        if(!interests.contains(degree))
+            interests.add(degree);
         //run inference
         session = new Session(num_courses_a_sem);
         session.setInitialCourses(cl.get(taken.toArray(new String[taken.size()])));
