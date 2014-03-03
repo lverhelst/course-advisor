@@ -123,6 +123,7 @@ public class InferenceEngine {
             //FORWARD CHAINING ON COURSES 
             //DO THIS SECOND
             for(CourseRule rule : rules) {
+                              
                 if(session.credit_hours >= TOTAL_REQUIRED_CREDIT_HOURS)
                         break;
                 //skip rule if it isn't in the student's interests
@@ -132,6 +133,12 @@ public class InferenceEngine {
                 if(rule.check()) {  //
                 //if(rule.stringCheck(rule.prereqString)) {                  
                     Fact fire = rule.getAction();
+                    //skip 0, 1 and 3 credit courses
+                    if(courseList.get(fire.getValue()).getCredits() < 3){
+                        continue;
+                    }
+                    
+                    
                     //ensure that 100 and 110 courses are not added to the same session
                     boolean special = false;
                     if(fire.getValue().endsWith("100")){
@@ -164,6 +171,10 @@ public class InferenceEngine {
     
     private boolean tryApplyCourse(String course_name, String rule_type){
         //If we haven't already suggested this course
+        //skip 0, 1 and 3 credit courses
+        if(courseList.get(course_name).getCredits() < 3){
+            return false;
+        }
         //ensure that 100 and 110 courses are not added to the same session
         boolean special = false;
         if(course_name.endsWith("100")){
