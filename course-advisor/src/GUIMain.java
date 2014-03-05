@@ -608,7 +608,8 @@ public class GUIMain extends javax.swing.JFrame {
 
             Course course = cl.get(value.toString());
             
-            c.setToolTipText(course.getName() + " - " + course.getTitle() + "\n" + course.getDescription());
+            c.setToolTipText("<html><b>" + course.getName() + "</b> - " + course.getTitle() 
+                    + " (" + course.getCredits() + ")<br>" + course.getDescription() + "</html>");
             return c;
         }
     }
