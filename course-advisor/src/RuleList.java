@@ -17,7 +17,7 @@ public class RuleList {
       * Format Name!Type!Set!Number
       *     Name: the name of the rule
       *     Type: Normal | Level 
-      *     Set: Normal (list of courses) | (the min level of course eg 300)
+      *     Set: Normal (list of courses) | (the min level of course Ex. 300)
       *     Number: Normal (number of courses to be taken) | Level (number of credits at that level)
       * @param filename a string of the filename
       * @return boolean value of the success of the loading
@@ -170,6 +170,7 @@ public class RuleList {
          * @param set the set of courses to compare against
          * @return the list of courses which match (null if no type is invalid)
          */
+        @Override
         public ArrayList<String> intersect(String[] set) {            
             switch(type) {
                 case "Normal":
@@ -177,7 +178,6 @@ public class RuleList {
                 case "Level":
                     return intersectLvl(set);
             }
-            
             return null;
         }
         
