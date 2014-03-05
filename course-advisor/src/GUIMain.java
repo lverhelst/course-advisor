@@ -1,8 +1,14 @@
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.DefaultListModel;
-import javax.swing.ListSelectionModel;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.ListCellRenderer;
 import javax.swing.table.AbstractTableModel;
 
 /*
@@ -191,6 +197,8 @@ public class GUIMain extends javax.swing.JFrame {
         );
 
         jTable2.setModel(loadCourseModel());
+        jTable2.setAutoscrolls(false);
+        jTable2.setIntercellSpacing(new java.awt.Dimension(2, 1));
         jScrollPane4.setViewportView(jTable2);
 
         jTable3.setModel(loadInterestModel());
@@ -432,7 +440,6 @@ public class GUIMain extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     public class CheckBoxTableModel extends AbstractTableModel {
-
         Object[][] data;
         String[] cols;
         
@@ -477,6 +484,22 @@ public class GUIMain extends javax.swing.JFrame {
            return (columnIndex != 0);            
         }
         
+    }   
+    
+    public class CheckboxCellRender implements ListCellRenderer { 
+        
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) { 
+            JPanel row = new JPanel();
+            JLabel label = new JLabel();
+            JCheckBox check = new JCheckBox(); 
+  
+            check.setSelected(list.isSelectedIndex(index)); 
+            label.setText(value.toString());
+            
+            row.add(check, BorderLayout.WEST); 
+            row.add(label, BorderLayout.CENTER); 
+            return row; 
+        }        
     }
-
 }
