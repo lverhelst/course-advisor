@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -82,7 +83,9 @@ public class GUIMain extends javax.swing.JFrame {
             JLabel lbl = new JLabel(rule.getName());
             rulePanel.add(lbl);
             JLabel scorelbl = new JLabel((isSatisfied)?"      \u2713":"       \u2717"); 
-            scorelbl.setForeground((isSatisfied) ? Color.GREEN : Color.red);
+            scorelbl.setForeground((isSatisfied) ? new Color(34,139,34,255): Color.red);
+            Font newLabelFont=new Font(scorelbl.getFont().getName(),Font.BOLD,scorelbl.getFont().getSize());  
+            scorelbl.setFont(newLabelFont);
             rulePanel.add(scorelbl);
             jPanel2.add(rulePanel, c);
         }
