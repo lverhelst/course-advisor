@@ -1,16 +1,14 @@
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
-import static javax.management.Query.value;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -70,7 +68,7 @@ public class GUIMain extends javax.swing.JFrame {
     }
 
     
-    public CheckBoxTableModel loadCourseModel(){
+    public CheckBoxTableModel loadCourseModel(){        
         String[] column_names = {"Course", "Taken"};
         Object[][] data = null;
         if(cl.loadCourseList()) {
@@ -81,7 +79,8 @@ public class GUIMain extends javax.swing.JFrame {
                 data[i][0] = courses[i];
                 data[i][1] = false;
             }
-        }
+        }  
+        
         return new CheckBoxTableModel(column_names, data);
     }
     
@@ -116,8 +115,6 @@ public class GUIMain extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         buttonGroup1 = new javax.swing.ButtonGroup();
         buttonGroup2 = new javax.swing.ButtonGroup();
         jComboBox1 = new javax.swing.JComboBox();
@@ -140,19 +137,6 @@ public class GUIMain extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jRadioButton3 = new javax.swing.JRadioButton();
         jRadioButton4 = new javax.swing.JRadioButton();
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -429,12 +413,10 @@ public class GUIMain extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
     private javax.swing.JTextArea jTextArea1;
