@@ -1,14 +1,16 @@
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -33,6 +35,53 @@ public class GUIMain extends javax.swing.JFrame {
         cl.loadCourseList();
         rl.loadRuleList("cpscrules.txt");
         initComponents();
+        initRuleComponents();        
+    }
+    
+    /**
+     * Initialize scorecard components
+     * 
+     * // \u2713 (checkmark) \u2717 (x) \u03B8 (Theta)
+     */
+    private void initRuleComponents(){
+        // Add rules to the Scorecard
+        for(Rule rule : rl.getRuleSetArray()){
+            JPanel rulePanel = new JPanel(); 
+            rulePanel.setLayout(new GridLayout(1,2));
+            JLabel lbl = new JLabel(rule.getName());
+            rulePanel.add(rule.getName(), lbl);
+            JLabel scorelbl = new JLabel("      \u03B8"); 
+            rulePanel.add(scorelbl);
+            jPanel2.add(rulePanel);
+        }
+    }
+    
+    /**
+     * Set if the rule is satisfied or not
+     */
+    private void setRulesSatisfied(){
+         jPanel2.removeAll();
+         for(Rule rule : rl.getRuleSetArray()){
+            boolean isSatisfied = rule.check(ie.getFacts().keySet().toArray(new String[ie.getFacts().keySet().size()]));
+            JPanel rulePanel = new JPanel(); 
+            rulePanel.setLayout(new GridLayout(1,2));
+            JLabel lbl = new JLabel(rule.getName());
+            rulePanel.add(rule.getName(), lbl);
+            JLabel scorelbl = new JLabel((isSatisfied)?"      \u2713":"       \u2717"); 
+            scorelbl.setForeground((isSatisfied) ? Color.GREEN : Color.red);
+            rulePanel.add(scorelbl);
+            System.out.println(rule.getName());
+            jPanel2.add(rulePanel);
+        }
+        jPanel2.updateUI();
+    }
+    
+    /**
+     * @return Number of rows for the Scorecard gridrow layout
+     */
+    private int getRuleRows(){
+        System.out.println("Num Rosws: " + (int)Math.ceil(rl.getRuleSetArray().size()/2));
+        return (int)Math.ceil(rl.getRuleSetArray().size()/2);
     }
     
     /**
@@ -137,6 +186,7 @@ public class GUIMain extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jRadioButton3 = new javax.swing.JRadioButton();
         jRadioButton4 = new javax.swing.JRadioButton();
+        jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -177,7 +227,7 @@ public class GUIMain extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -216,6 +266,9 @@ public class GUIMain extends javax.swing.JFrame {
         buttonGroup2.add(jRadioButton4);
         jRadioButton4.setText("NO");
 
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Scorecard"));
+        jPanel2.setLayout(new java.awt.GridLayout(getRuleRows(), 1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -223,7 +276,23 @@ public class GUIMain extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jRadioButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton2))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jRadioButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
@@ -232,27 +301,11 @@ public class GUIMain extends javax.swing.JFrame {
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(14, 14, 14)
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)
-                            .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jRadioButton1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jRadioButton2))
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jRadioButton3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jRadioButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                        .addGap(18, 18, 18)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 738, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,7 +347,9 @@ public class GUIMain extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButton1)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -347,19 +402,8 @@ public class GUIMain extends javax.swing.JFrame {
         //Print if rules passed
         jTextArea1.setText(jTextArea1.getText() + "\r\n" + "Credit hours: " + session.credit_hours + "/120 = " + (float)session.credit_hours/120 * 100 + "%");
         jTextArea1.setText(jTextArea1.getText() + "\r\n" + session.printSemesters());
-        int i = 0;
-        for(Course c : session.getSetCourses()){
-            if(c.getSubject().equals("CPSC")){
-                i++;
-            }
-        }
-        //If the user has not satisfied a rule
-        String[] factsKeySet = new String[ie.getFacts().keySet().size()];
-        for(Rule rule : rl.getRuleSetArray()){ 
-                jTextArea1.setText(jTextArea1.getText() + "\r\n" + rule.getName() + ": " + ((rule.check(ie.getFacts().keySet().toArray(factsKeySet))) ? "PASSED" : "FAILED"));
-        }
-        jTextArea1.setText(jTextArea1.getText() + "\r\n" + "120 credit hour requirment: (" + session.credit_hours + ") " +((float)session.credit_hours/120 * 100 >= 100 ? "PASSED" : "FAILED"));
-        jTextArea1.setText(jTextArea1.getText() + "\r\n" + "20 CPSC Course Requirement: (" + i + ") " + ((i >= 20)? "PASSED" : "FAILED"));
+        //Update ScoreCard
+        setRulesSatisfied();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -409,6 +453,7 @@ public class GUIMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
