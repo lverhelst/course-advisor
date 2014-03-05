@@ -7,3 +7,4 @@ CPSC 400+ Level Division Requirement!Level!CPSC400!12
 Upper Level Division Requirement (300+)!Level!NULL300!45
 General Science Requirement!Normal!PHYS110,PHYS111,PHYS100,PHYS101,CHEM100,CHEM101,BIOL101,BIOL102,PSYC101,ENVS101,GEOG204,GEOG205,GEOG210!2
 120 Credit Hours!Level!NULL000!120
+20 CPSC Courses!Normal!!20
