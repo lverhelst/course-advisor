@@ -10,13 +10,12 @@ import java.util.Arrays;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
-import javax.swing.border.EmptyBorder;
+import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 /**
- *
  * @author Emery
  */
 public class GUIMain extends javax.swing.JFrame {
@@ -182,6 +181,10 @@ public class GUIMain extends javax.swing.JFrame {
         subjects.getTableHeader().setReorderingAllowed(false);
         col = subjects.getColumnModel().getColumn(0);
         col.setMaxWidth(20);
+                
+        col = takenCourses.getColumnModel().getColumn(1);
+        col.setCellRenderer(new ToolTipCellRenderer());
+        
     }
     
     
@@ -593,6 +596,20 @@ public class GUIMain extends javax.swing.JFrame {
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex){
            return (columnIndex != 1);            
+        }
+    }
+    
+    public class ToolTipCellRenderer extends DefaultTableCellRenderer {
+    @Override
+        public Component getTableCellRendererComponent (JTable table, Object value,
+                            boolean isSelected, boolean hasFocus, int row, int column) {
+            JLabel c = (JLabel)super.getTableCellRendererComponent(table, value,
+                    isSelected, hasFocus, row, column);
+
+            Course course = cl.get(value.toString());
+            
+            c.setToolTipText(course.getName() + " - " + course.getTitle() + "\n" + course.getDescription());
+            return c;
         }
     }
 }
