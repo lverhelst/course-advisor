@@ -12,6 +12,14 @@ import java.util.HashMap;
 public class RuleList {
     private HashMap<String, Rule> ruleset;
     private ArrayList<Rule> rulesetArray;
+    private CourseList list = new CourseList();
+            
+    
+    public RuleList(){
+        list.loadCourseList();
+    }
+    
+    
      /**
       * Used to load a list of rules from the file passed into the method
       * Format Name!Type!Set!Number
@@ -147,6 +155,7 @@ public class RuleList {
          */
         private boolean checkLevel(String[] set) {
             int credits = 0;
+
             
             for(String crule: this.set) {
                 int cnum = Integer.parseInt(crule.substring(4));
@@ -157,7 +166,7 @@ public class RuleList {
                     String subject = rule.substring(0,4);
                     
                     if((csubject.equals("NULL") || csubject.equals(subject)) && num >= cnum) {
-                        credits += 3;
+                        credits += list.get(rule).getCredits();
                     }
                 }
             }
@@ -224,6 +233,7 @@ public class RuleList {
         /**
         * @return a string of the rule type 
         */
+        @Override
         public String getType(){
             return type;
         }
@@ -231,18 +241,21 @@ public class RuleList {
         /**
          * @return the name of the rule
          */
+        @Override
         public String getAction() {
             return name;
         }
         /**
          * @return the Set of Names of Courses for this rule
          */
+        @Override
         public String[] getSet(){
             return this.set;
         }
         /**
          * @return the name of the rule
          */
+        @Override
         public String getName(){
             return this.name;
         }

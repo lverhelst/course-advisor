@@ -1,14 +1,14 @@
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.FontMetrics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.DefaultListModel;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
@@ -35,38 +35,53 @@ public class GUIMain extends javax.swing.JFrame {
     
     /**
      * Initialize scorecard components
-     * 
      * // \u2713 (checkmark) \u2717 (x) \u03B8 (Theta)
      */
     private void initRuleComponents(){
         // Add rules to the Scorecard
+        jPanel2.setLayout(new GridLayout(0,2));
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        int i = 0;
         for(Rule rule : rl.getRuleSetArray()){
+            i++;
+            c.gridx = i % 2;
+            c.gridy = (int) (i / 2);
+            //Setup rule panel
             JPanel rulePanel = new JPanel(); 
-            rulePanel.setLayout(new GridLayout(1,2));
+            rulePanel.setLayout(new GridBagLayout());
             JLabel lbl = new JLabel(rule.getName());
-            rulePanel.add(rule.getName(), lbl);
+            rulePanel.add(lbl);
             JLabel scorelbl = new JLabel("      \u03B8"); 
             rulePanel.add(scorelbl);
-            jPanel2.add(rulePanel);
+            jPanel2.add(rulePanel, c);
         }
     }
     
     /**
-     * Set if the rule is satisfied or not
+     * Display if the rule is satisfied or not
      */
     private void setRulesSatisfied(){
-         jPanel2.removeAll();
-         for(Rule rule : rl.getRuleSetArray()){
+        jPanel2.removeAll();
+        // Add rules to the Scorecard
+        jPanel2.setLayout(new GridLayout(0,2));
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.FIRST_LINE_START;
+        int i = 0;
+        for(Rule rule : rl.getRuleSetArray()){
+            i++;
+            c.gridx = i % 2;
+            c.gridy = (int) (i / 2);
             boolean isSatisfied = rule.check(ie.getFacts().keySet().toArray(new String[ie.getFacts().keySet().size()]));
+            //Setup rule panel
             JPanel rulePanel = new JPanel(); 
-            rulePanel.setLayout(new GridLayout(1,2));
+            rulePanel.setLayout(new GridBagLayout());
             JLabel lbl = new JLabel(rule.getName());
-            rulePanel.add(rule.getName(), lbl);
+            rulePanel.add(lbl);
             JLabel scorelbl = new JLabel((isSatisfied)?"      \u2713":"       \u2717"); 
             scorelbl.setForeground((isSatisfied) ? Color.GREEN : Color.red);
             rulePanel.add(scorelbl);
-            System.out.println(rule.getName());
-            jPanel2.add(rulePanel);
+            jPanel2.add(rulePanel, c);
         }
         jPanel2.updateUI();
     }
@@ -75,7 +90,6 @@ public class GUIMain extends javax.swing.JFrame {
      * @return Number of rows for the Scorecard gridrow layout
      */
     private int getRuleRows(){
-        System.out.println("Num Rosws: " + (int)Math.ceil(rl.getRuleSetArray().size()/2));
         return (int)Math.ceil(rl.getRuleSetArray().size()/2);
     }
     
@@ -235,9 +249,9 @@ public class GUIMain extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 422, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -350,7 +364,7 @@ public class GUIMain extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -358,12 +372,10 @@ public class GUIMain extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton1)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jButton1)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
