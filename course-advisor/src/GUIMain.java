@@ -485,6 +485,8 @@ public class GUIMain extends javax.swing.JFrame {
            return (columnIndex != 0);            
         }
         
+        
+        
     }   
     
     /**

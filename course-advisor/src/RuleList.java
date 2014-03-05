@@ -133,7 +133,7 @@ public class RuleList {
             int matched = 0;
             for(String crule: this.set) {
                 for(String rule: set) {
-                    if(crule.equals(rule.split(":")[1]))
+                    if(crule.equals(rule))
                         matched++;
                 }
             }
@@ -153,8 +153,8 @@ public class RuleList {
                 String csubject = crule.substring(0,4);
 
                 for(String rule: set) {
-                    int num = Integer.parseInt(rule.substring(7));
-                    String subject = rule.substring(3,7);
+                    int num = Integer.parseInt(rule.substring(4));
+                    String subject = rule.substring(0,4);
                     
                     if((csubject.equals("NULL") || csubject.equals(subject)) && num >= cnum) {
                         credits += 3;
@@ -190,7 +190,7 @@ public class RuleList {
             ArrayList<String> intersection = new ArrayList();
             for(String crule: this.set) {
                 for(String rule: set) {
-                    if(crule.equals(rule.split(":")[1]))
+                    if(crule.equals(rule))
                         intersection.add(rule);
                 }
             }

@@ -18,7 +18,7 @@ public class InferenceEngine {
     
     //Example RULE: CPSC300 + 60CreditHours  => CPSC 400    p
     private ArrayList<CourseRule> rules;
-    private HashMap<String, Fact> facts;
+    private HashMap<String, String> facts;
     
     private Session session;
     private CourseList courseList;
@@ -43,10 +43,8 @@ public class InferenceEngine {
         this.loadRules();
         
         //loads the currently selected courses
-        Fact newFact = null;
         for(Course course :current_Session.getSetCourses()){
-            newFact = new Fact("cr", course.getName()) ;
-            facts.put(newFact.toString(), newFact);
+            facts.put(course.getName(), course.getName());
         }        
     }
     
@@ -55,15 +53,13 @@ public class InferenceEngine {
      */
     private void loadRules(){
         //Load Course Prerequisite Rules EX: CourseA+CourseB=>CourseC
-        Fact newFact = null;
-        ArrayList<Fact> pres ;
+        ArrayList<String> pres ;
         for(Course course : courseList.getCourses()){
-             newFact = new Fact("cr", course.getName());
-             pres = new ArrayList<Fact>();
+             pres = new ArrayList<String>();
              for(String str : course.getPrereqs()){
-                 pres.add(new Fact("cr", str));
+                 pres.add(str);
              }
-             rules.add(new CourseRule(newFact, pres, course.preString));
+             rules.add(new CourseRule(course.getName(), pres, course.preString));
         }
         System.out.println("Loaded Rules");
     }
@@ -127,34 +123,34 @@ public class InferenceEngine {
                 if(session.credit_hours >= TOTAL_REQUIRED_CREDIT_HOURS)
                         break;
                 //skip rule if it isn't in the student's interests
-                if(interests != null && interests.size() > 0 && !interests.contains(rule.action.getValue().substring(0, 4))){
+                if(interests != null && interests.size() > 0 && !interests.contains(rule.action.substring(0, 4))){
                     continue;
                 } 
                 if(rule.check()) {  //
                 //if(rule.stringCheck(rule.prereqString)) {                  
-                    Fact fire = rule.getAction();
+                    String fire = rule.getAction();
                     //skip 0, 1 and 3 credit courses
-                    if(courseList.get(fire.getValue()).getCredits() < 3){
+                    if(courseList.get(fire).getCredits() < 3){
                         continue;
                     }
                     
                     
                     //ensure that 100 and 110 courses are not added to the same session
                     boolean special = false;
-                    if(fire.getValue().endsWith("100")){
-                        special = getFacts().containsKey(fire.getValue().substring(0, 4) + "110");
+                    if(fire.endsWith("100")){
+                        special = getFacts().containsKey(fire.substring(0, 4) + "110");
                     }
-                    else if(fire.getValue().endsWith("110")){
-                        special = getFacts().containsKey(fire.getValue().substring(0, 4) + "100");
+                    else if(fire.endsWith("110")){
+                        special = getFacts().containsKey(fire.substring(0, 4) + "100");
                     }
                     //filter out specialized courses if requested
                     if(!include_specialized_topics){
-                        special = Integer.parseInt(fire.getValue().substring(fire.getValue().length() - 2, fire.getValue().length())) >= 90;
+                        special = Integer.parseInt(fire.substring(fire.length() - 2, fire.length())) >= 90;
                     }
                     
                     if(!facts.containsKey(fire.toString()) && !special) {                
                       //  System.out.println("Adding non-priority course: " + fire.getValue());      
-                        if(session.addCourse(courseList.get(fire.getValue()).getAcademic_Year(), courseList.get(fire.getValue()))){
+                        if(session.addCourse(courseList.get(fire).getAcademic_Year(), courseList.get(fire))){
                             getFacts().put(fire.toString(), fire);
                             applied_a_rule = true;
                         }
@@ -178,25 +174,25 @@ public class InferenceEngine {
         //ensure that 100 and 110 courses are not added to the same session
         boolean special = false;
         if(course_name.endsWith("100")){
-            special = getFacts().containsKey("cr:" + course_name.substring(0, 4) + "110");
+            special = getFacts().containsKey(course_name.substring(0, 4) + "110");
         }else if(course_name.endsWith("110")){
-            special = getFacts().containsKey("cr: " + course_name.substring(0, 4) + "100");
+            special = getFacts().containsKey(course_name.substring(0, 4) + "100");
         }
         //filter out specialized courses if requested
         if(!include_specialized_topics){
             special = Integer.parseInt(course_name.substring(course_name.length() - 2, course_name.length())) >= 90;
         }
-        if(!facts.containsKey("cr:" + course_name) && !special){
+        if(!facts.containsKey(course_name) && !special){
             //Check if we can take the course
             boolean canTake = false;
             //This for loop loops n times (max) to get 1 course rule (super silly)
             for(CourseRule cr : rules) {
                 //skip rule if it isn't in the student's interests, and its not a normal rule type (course isn't explicitly required)
-                if(interests != null && interests.size() > 0 &&!interests.contains(cr.action.getValue().substring(0, 4)) && !rule_type.equals("normal")){
+                if(interests != null && interests.size() > 0 &&!interests.contains(cr.action.substring(0, 4)) && !rule_type.equals("normal")){
                     continue;
                 }
                //check prereqs for the rule resulting in this course
-                if(cr.getAction().getValue().equals(course_name)){   
+                if(cr.getAction().equals(course_name)){   
                     //if(cr.check()) {  //
                     if(cr.stringCheck(cr.prereqString)) {                  
                         canTake = true; 
@@ -208,7 +204,7 @@ public class InferenceEngine {
             {       
                
                 if(session.addCourse(courseList.get(course_name).getAcademic_Year(), courseList.get(course_name))) {
-                    getFacts().put("cr:" + course_name, new Fact("cr", course_name));   
+                    getFacts().put(course_name, course_name);   
                     return true;
                 }
             }
@@ -222,7 +218,7 @@ public class InferenceEngine {
     /**
      * @return the facts
      */
-    public HashMap<String, Fact> getFacts() {
+    public HashMap<String, String> getFacts() {
         return facts;
     }
 
@@ -245,8 +241,8 @@ public class InferenceEngine {
      */
     public class CourseRule  {
         public String prereqString;
-        public ArrayList<Fact> premises;
-        public Fact action;
+        public ArrayList<String> premises;
+        public String action;
         
         /**
          * Default constructor used to define the action and premises to 
@@ -254,7 +250,7 @@ public class InferenceEngine {
          * @param action the action to perform
          * @param premises which are needed to trigger
          */
-        public CourseRule(Fact action, ArrayList<Fact> premises, String preString) {
+        public CourseRule(String action, ArrayList<String> premises, String preString) {
             this.premises = premises;
             this.prereqString = preString;
             this.action = action;
@@ -265,11 +261,7 @@ public class InferenceEngine {
          * @return  if a course rule contains a specified course as a premise
          */
         public boolean containsPremise(String course){
-            for(Fact fact: premises) {
-                if(fact.getValue().equals(course))
-                    return true;
-            }
-            return false;
+            return premises.contains(course);
         }
         
         /**
@@ -280,7 +272,7 @@ public class InferenceEngine {
             boolean premise = !premises.isEmpty();
             if(premises.isEmpty())
                 return true;
-            for(Fact fact: premises) {
+            for(String fact: premises) {
                 if(fact != null && premise)
                     premise &= getFacts().containsKey(fact.toString());
                 else //invalid course???
@@ -313,13 +305,13 @@ public class InferenceEngine {
                 switch(tokens[1]){
                     
                     case "OR":
-                        if(tokens[0].equals("TRUE") || getFacts().containsKey("cr:" + tokens[0]) || getFacts().containsKey("cr:" + tokens[2])){
+                        if(tokens[0].equals("TRUE") || getFacts().containsKey(tokens[0]) || getFacts().containsKey(tokens[2])){
                             return this.stringCheck("TRUE" + remainder);
                         }else{
                              return this.stringCheck("FALSE" + remainder);
                         }
                     case "AND":
-                        if((tokens[0].equals("TRUE") || getFacts().containsKey("cr:" + tokens[0])) && getFacts().containsKey("cr:" + tokens[2])){  
+                        if((tokens[0].equals("TRUE") || getFacts().containsKey(tokens[0])) && getFacts().containsKey(tokens[2])){  
                             return this.stringCheck("TRUE" + remainder);
                         }else{
                             return this.stringCheck("FALSE" + remainder);
@@ -329,7 +321,7 @@ public class InferenceEngine {
                 }
             }else{    
                 //case when 1 prereq
-                return getFacts().containsKey("cr:" + tokens[0]); 
+                return getFacts().containsKey(tokens[0]); 
             }
         }
         
@@ -339,16 +331,16 @@ public class InferenceEngine {
          * Used to get the action of the rule
          * @return the action of the rule
          */
-        public Fact getAction() {
+        public String getAction() {
             return action;
         }
         
         public String toString(){
             String ret = prereqString + " ||||| ";
-            for(Fact f : premises){
-                ret += f.getValue() + " + ";
+            for(String f : premises){
+                ret += f + " + ";
             }
-            ret += " => " + this.action.getValue();
+            ret += " => " + this.action;
             return ret;
         }
     }
