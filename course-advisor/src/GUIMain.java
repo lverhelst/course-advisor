@@ -108,16 +108,10 @@ public class GUIMain extends javax.swing.JFrame {
         jTable2.getTableHeader().setReorderingAllowed(false);
         col = jTable2.getColumnModel().getColumn(0);
         col.setMaxWidth(20);
-        col.setResizable(false);        
-        col = jTable2.getColumnModel().getColumn(1);
-        col.setResizable(false);
         
         jTable3.getTableHeader().setReorderingAllowed(false);
         col = jTable3.getColumnModel().getColumn(0);
         col.setMaxWidth(20);
-        col.setResizable(false);      
-        col = jTable3.getColumnModel().getColumn(1);
-        col.setResizable(false);
     }
     
     
@@ -199,9 +193,13 @@ public class GUIMain extends javax.swing.JFrame {
         jTable2.setModel(loadCourseModel());
         jTable2.setAutoscrolls(false);
         jTable2.setIntercellSpacing(new java.awt.Dimension(2, 1));
+        jTable2.getTableHeader().setResizingAllowed(false);
+        jTable2.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(jTable2);
 
         jTable3.setModel(loadInterestModel());
+        jTable3.getTableHeader().setResizingAllowed(false);
+        jTable3.getTableHeader().setReorderingAllowed(false);
         jScrollPane5.setViewportView(jTable3);
 
         jButton1.setText("GO!");
