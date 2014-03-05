@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
+import static javax.management.Query.value;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -486,19 +487,49 @@ public class GUIMain extends javax.swing.JFrame {
         
     }   
     
+    /**
+     * Used to model a single row in a list and give it a checkbox
+     */
+    public class CheckBoxRow extends JLabel {
+        private JCheckBox checkbox;
+        
+        /**
+         * Used to render a checkbox row
+         * @param course the course to render in the row
+         */
+        public CheckBoxRow(Course course) {
+            checkbox = new JCheckBox();
+             this.setText(course.toString());
+//            label.setToolTipText(((Course)value).getCourseInfo());
+        }
+        
+        /**
+         * Used to get the value of the checkbox
+         * @return true if selected
+         */
+        public boolean isSelected() {
+            return checkbox.isSelected();
+        }
+        
+        /**
+         * Used to allow the checkbox to be set
+         * @param value true if box is selected
+         */
+        public void setSelected(boolean value) {
+            checkbox.setSelected(value);
+        }
+    }
+    
+    /**
+     * Overrides the default cell renderer to make a checkbox list row
+     */
     public class CheckboxCellRender implements ListCellRenderer { 
         
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) { 
-            JPanel row = new JPanel();
-            JLabel label = new JLabel();
-            JCheckBox check = new JCheckBox(); 
-  
-            check.setSelected(list.isSelectedIndex(index)); 
-            label.setText(value.toString());
+            CheckBoxRow row = new CheckBoxRow((Course)value);  
+            row.setSelected(list.isSelectedIndex(index)); 
             
-            row.add(check, BorderLayout.WEST); 
-            row.add(label, BorderLayout.CENTER); 
             return row; 
         }        
     }
