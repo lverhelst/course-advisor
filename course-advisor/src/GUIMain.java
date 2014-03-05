@@ -105,12 +105,12 @@ public class GUIMain extends javax.swing.JFrame {
     private void initTableModel() {
         TableColumn col;
         
-        jTable2.setDragEnabled(false);
+        jTable2.getTableHeader().setReorderingAllowed(false);
         col = jTable2.getColumnModel().getColumn(0);
         col.setMaxWidth(20);
         col.setResizable(false);
         
-        jTable3.setDragEnabled(false);
+        jTable3.getTableHeader().setReorderingAllowed(false);
         col = jTable3.getColumnModel().getColumn(0);
         col.setMaxWidth(20);
         col.setResizable(false);
