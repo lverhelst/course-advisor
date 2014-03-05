@@ -1,4 +1,3 @@
-
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,13 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -33,6 +26,7 @@ public class GUIMain extends javax.swing.JFrame {
         cl.loadCourseList();
         rl.loadRuleList("cpscrules.txt");
         initComponents();
+        initTableModel();
     }
     
     /**
@@ -69,15 +63,15 @@ public class GUIMain extends javax.swing.JFrame {
 
     
     public CheckBoxTableModel loadCourseModel(){        
-        String[] column_names = {"Course", "Taken"};
+        String[] column_names = {"", "Course"};
         Object[][] data = null;
         if(cl.loadCourseList()) {
             String[] courses = cl.getCourseNames();
             Arrays.sort(courses);
             data = new Object[courses.length][2];
             for(int i = 0; i < courses.length; i++) {
-                data[i][0] = courses[i];
-                data[i][1] = false;
+                data[i][1] = courses[i];
+                data[i][0] = false;
             }
         }  
         
@@ -85,7 +79,7 @@ public class GUIMain extends javax.swing.JFrame {
     }
     
     public CheckBoxTableModel loadInterestModel(){
-        String[] column_names = {"Degree", "Interested In"};
+        String[] column_names = {"", "Degree"};
         Object[][] data = null;
         if(cl.loadCourseList()) {
             String[] courses = cl.getCourseNames();
@@ -98,11 +92,28 @@ public class GUIMain extends javax.swing.JFrame {
             }
             data = new Object[degrees.size()][2];
             for(int i = 0; i < degrees.size(); i++) {
-                data[i][0] = degrees.get(i);
-                data[i][1] = false;
+                data[i][1] = degrees.get(i);
+                data[i][0] = false;
             }
         }
         return new CheckBoxTableModel(column_names, data);
+    }
+    
+    /**
+     * Used to change the column widths and set the table settings
+     */
+    private void initTableModel() {
+        TableColumn col;
+        
+        jTable2.setDragEnabled(false);
+        col = jTable2.getColumnModel().getColumn(0);
+        col.setMaxWidth(20);
+        col.setResizable(false);
+        
+        jTable3.setDragEnabled(false);
+        col = jTable3.getColumnModel().getColumn(0);
+        col.setMaxWidth(20);
+        col.setResizable(false);
     }
     
     
@@ -303,6 +314,7 @@ public class GUIMain extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //RUN AN INFERENCE!!
+        
       //get degree
         String degree = jComboBox1.getSelectedItem().toString();
         jTextArea1.setText("User selected degree: " + degree);
@@ -317,9 +329,9 @@ public class GUIMain extends javax.swing.JFrame {
         ArrayList<String> taken = new ArrayList<String>();
         for(int i = 0; i < jTable2.getRowCount(); i++){
             //if selected
-            if((Boolean)jTable2.getValueAt(i, 1)){
-                jTextArea1.setText(jTextArea1.getText() + "\r\n     " + (String)jTable2.getValueAt(i,0));
-                taken.add((String)jTable2.getValueAt(i,0));
+            if((Boolean)jTable2.getValueAt(i, 0)){
+                jTextArea1.setText(jTextArea1.getText() + "\r\n     " + (String)jTable2.getValueAt(i,1));
+                taken.add((String)jTable2.getValueAt(i,1));
             }
         }
         //get interests by name
@@ -328,9 +340,9 @@ public class GUIMain extends javax.swing.JFrame {
         
         for(int i = 0; i < jTable3.getRowCount(); i++){
             //if selected
-            if((Boolean)jTable3.getValueAt(i, 1)){
-                jTextArea1.setText(jTextArea1.getText() + "\r\n     " + (String)jTable3.getValueAt(i,0));
-                interests.add((String)jTable3.getValueAt(i,0));
+            if((Boolean)jTable3.getValueAt(i, 0)){
+                jTextArea1.setText(jTextArea1.getText() + "\r\n     " + (String)jTable3.getValueAt(i,1));
+                interests.add((String)jTable3.getValueAt(i,1));
             }
         }
         if(!interests.contains(degree))
@@ -454,8 +466,7 @@ public class GUIMain extends javax.swing.JFrame {
         @Override
         public void setValueAt(Object value, int row, int column) {
             data[row][column] = value;
-        }
-        
+        }        
         
         @Override
         public Class getColumnClass(int column){
@@ -464,57 +475,7 @@ public class GUIMain extends javax.swing.JFrame {
         
         @Override
         public boolean isCellEditable(int rowIndex, int columnIndex){
-           return (columnIndex != 0);            
+           return (columnIndex != 1);            
         }
-        
-        
-        
-    }   
-    
-    /**
-     * Used to model a single row in a list and give it a checkbox
-     */
-    public class CheckBoxRow extends JLabel {
-        private JCheckBox checkbox;
-        
-        /**
-         * Used to render a checkbox row
-         * @param course the course to render in the row
-         */
-        public CheckBoxRow(Course course) {
-            checkbox = new JCheckBox();
-             this.setText(course.toString());
-//            label.setToolTipText(((Course)value).getCourseInfo());
-        }
-        
-        /**
-         * Used to get the value of the checkbox
-         * @return true if selected
-         */
-        public boolean isSelected() {
-            return checkbox.isSelected();
-        }
-        
-        /**
-         * Used to allow the checkbox to be set
-         * @param value true if box is selected
-         */
-        public void setSelected(boolean value) {
-            checkbox.setSelected(value);
-        }
-    }
-    
-    /**
-     * Overrides the default cell renderer to make a checkbox list row
-     */
-    public class CheckboxCellRender implements ListCellRenderer { 
-        
-        @Override
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) { 
-            CheckBoxRow row = new CheckBoxRow((Course)value);  
-            row.setSelected(list.isSelectedIndex(index)); 
-            
-            return row; 
-        }        
     }
 }
