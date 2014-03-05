@@ -1,14 +1,10 @@
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.DefaultListModel;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
@@ -30,7 +26,8 @@ public class GUIMain extends javax.swing.JFrame {
         rl.loadRuleList("cpscrules.txt");
         initComponents();
         initTableModel();
-        initRuleComponents();        
+        initRuleComponents();    
+        this.setResizable(false);
     }
     
     /**
@@ -155,12 +152,12 @@ public class GUIMain extends javax.swing.JFrame {
     private void initTableModel() {
         TableColumn col;
         
-        jTable2.getTableHeader().setReorderingAllowed(false);
-        col = jTable2.getColumnModel().getColumn(0);
+        takenCourses.getTableHeader().setReorderingAllowed(false);
+        col = takenCourses.getColumnModel().getColumn(0);
         col.setMaxWidth(20);
         
-        jTable3.getTableHeader().setReorderingAllowed(false);
-        col = jTable3.getColumnModel().getColumn(0);
+        subjects.getTableHeader().setReorderingAllowed(false);
+        col = subjects.getColumnModel().getColumn(0);
         col.setMaxWidth(20);
     }
     
@@ -186,9 +183,9 @@ public class GUIMain extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        takenCourses = new javax.swing.JTable();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        subjects = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
@@ -197,6 +194,8 @@ public class GUIMain extends javax.swing.JFrame {
         jRadioButton3 = new javax.swing.JRadioButton();
         jRadioButton4 = new javax.swing.JRadioButton();
         jPanel2 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -241,17 +240,17 @@ public class GUIMain extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTable2.setModel(loadCourseModel());
-        jTable2.setAutoscrolls(false);
-        jTable2.setIntercellSpacing(new java.awt.Dimension(2, 1));
-        jTable2.getTableHeader().setResizingAllowed(false);
-        jTable2.getTableHeader().setReorderingAllowed(false);
-        jScrollPane4.setViewportView(jTable2);
+        takenCourses.setModel(loadCourseModel());
+        takenCourses.setAutoscrolls(false);
+        takenCourses.setIntercellSpacing(new java.awt.Dimension(2, 1));
+        takenCourses.getTableHeader().setResizingAllowed(false);
+        takenCourses.getTableHeader().setReorderingAllowed(false);
+        jScrollPane4.setViewportView(takenCourses);
 
-        jTable3.setModel(loadInterestModel());
-        jTable3.getTableHeader().setResizingAllowed(false);
-        jTable3.getTableHeader().setReorderingAllowed(false);
-        jScrollPane5.setViewportView(jTable3);
+        subjects.setModel(loadInterestModel());
+        subjects.getTableHeader().setResizingAllowed(false);
+        subjects.getTableHeader().setReorderingAllowed(false);
+        jScrollPane5.setViewportView(subjects);
 
         jButton1.setText("GO!");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -283,6 +282,20 @@ public class GUIMain extends javax.swing.JFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Scorecard"));
         jPanel2.setLayout(new java.awt.GridLayout(getRuleRows(), 1));
 
+        jButton2.setText("Clear");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearTaken(evt);
+            }
+        });
+
+        jButton3.setText("Clear");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearSubject(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -290,21 +303,14 @@ public class GUIMain extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
                     .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jRadioButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jRadioButton2))
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jRadioButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -315,7 +321,22 @@ public class GUIMain extends javax.swing.JFrame {
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(14, 14, 14)
                         .addComponent(jButton1)
-                        .addGap(18, 18, 18)))
+                        .addGap(18, 18, 18))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton3))
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jRadioButton3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jRadioButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton2))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 738, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -344,15 +365,22 @@ public class GUIMain extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jRadioButton3)
+                                    .addComponent(jRadioButton4))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel3)
+                                .addGap(6, 6, 6))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jButton2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jRadioButton3)
-                            .addComponent(jRadioButton4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
+                            .addComponent(jLabel2)
+                            .addComponent(jButton3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -385,22 +413,22 @@ public class GUIMain extends javax.swing.JFrame {
         //get taken courses by name
         jTextArea1.setText(jTextArea1.getText() + "\r\n\r\nUser has taken the following courses: ");
         ArrayList<String> taken = new ArrayList<String>();
-        for(int i = 0; i < jTable2.getRowCount(); i++){
+        for(int i = 0; i < takenCourses.getRowCount(); i++){
             //if selected
-            if((Boolean)jTable2.getValueAt(i, 0)){
-                jTextArea1.setText(jTextArea1.getText() + "\r\n     " + (String)jTable2.getValueAt(i,1));
-                taken.add((String)jTable2.getValueAt(i,1));
+            if((Boolean)takenCourses.getValueAt(i, 0)){
+                jTextArea1.setText(jTextArea1.getText() + "\r\n     " + (String)takenCourses.getValueAt(i,1));
+                taken.add((String)takenCourses.getValueAt(i,1));
             }
         }
         //get interests by name
         ArrayList<String> interests = new ArrayList<String>();
         jTextArea1.setText(jTextArea1.getText() + "\r\n\r\nUser has interest in the following degrees: ");
         
-        for(int i = 0; i < jTable3.getRowCount(); i++){
+        for(int i = 0; i < subjects.getRowCount(); i++){
             //if selected
-            if((Boolean)jTable3.getValueAt(i, 0)){
-                jTextArea1.setText(jTextArea1.getText() + "\r\n     " + (String)jTable3.getValueAt(i,1));
-                interests.add((String)jTable3.getValueAt(i,1));
+            if((Boolean)subjects.getValueAt(i, 0)){
+                jTextArea1.setText(jTextArea1.getText() + "\r\n     " + (String)subjects.getValueAt(i,1));
+                interests.add((String)subjects.getValueAt(i,1));
             }
         }
         if(!interests.contains(degree))
@@ -420,6 +448,20 @@ public class GUIMain extends javax.swing.JFrame {
         //Update ScoreCard
         setRulesSatisfied();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void clearTaken(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearTaken
+        for(int i = 0; i < takenCourses.getRowCount(); i++){            
+            takenCourses.setValueAt(false, i, 0);
+        }
+        takenCourses.repaint();
+    }//GEN-LAST:event_clearTaken
+
+    private void clearSubject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearSubject
+        for(int i = 0; i < subjects.getRowCount(); i++){            
+            subjects.setValueAt(false, i, 0);
+        }
+        subjects.repaint();
+    }//GEN-LAST:event_clearSubject
 
     /**
      * @param args the command line arguments
@@ -460,6 +502,8 @@ public class GUIMain extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -477,9 +521,9 @@ public class GUIMain extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTable subjects;
+    private javax.swing.JTable takenCourses;
     // End of variables declaration//GEN-END:variables
 
     public class CheckBoxTableModel extends AbstractTableModel {
