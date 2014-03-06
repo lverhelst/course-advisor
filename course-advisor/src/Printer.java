@@ -4,40 +4,33 @@ import java.io.PrintWriter;
  * @author Emery
  */
 public class Printer {
-    private PrintWriter printWriter;
-    private boolean verbose;
-    private boolean error;
-    private boolean printFile;
+    private static PrintWriter printWriter;
+    private static boolean verbose;
+    private static boolean error;
+    private static boolean printFile;
     
     /**
      * Used to set the output device
      * @param printWriter the output device 
-    */
-    public Printer(PrintWriter printWriter) {
-        this.printWriter = printWriter;
+    */    
+    public static void setTrace(PrintWriter printWriter) {
+        Printer.printWriter = printWriter;
+        printFile = true;
     }
 
     /**
      * Used to turn on/off verbose mode
      * @param verbose true for on
      */
-    public void verbose(boolean verbose) {
-        this.verbose = verbose;
+    public static void verbose(boolean verbose) {
+        Printer.verbose = verbose;
     }
-        
-    /**
-     * Used to turn on/off print to file
-     * @param printFile true if print to file
-     */
-    public void printToFile(boolean printFile) {
-        this.printFile = printFile;
-    }
-    
+         
     /**
      * Used to check if an error message was printed
      * @return 
      */
-    public boolean error() {
+    public static boolean error() {
         return error;
     }
     
@@ -45,7 +38,7 @@ public class Printer {
      * Used to print messages to the console or file if set to
      * @param line the string to print
      */
-    public void print(String line) {
+    public static void print(String line) {
         if(verbose) {  
             System.out.println(line);
             if(printFile)
@@ -57,7 +50,7 @@ public class Printer {
      * Used to print error messages to the console or file if set to
      * @param line the line to print
      */
-    public void printError(String line) {
+    public static void printError(String line) {
         error = true;
         System.out.println("\u001B[31m" + line + "\u001B[0m");
         if(printFile)
