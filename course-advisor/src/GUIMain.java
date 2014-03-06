@@ -12,10 +12,11 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
+import javax.swing.ToolTipManager;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.ToolTipManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -41,6 +42,7 @@ public class GUIMain extends javax.swing.JFrame {
         initTableModel();
         initRuleComponents();    
         this.setResizable(false);
+        this.setIconImage(new ImageIcon("Image/472.png").getImage());
     }
     
     /**
@@ -248,6 +250,7 @@ public class GUIMain extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(204, 255, 255));
         setResizable(false);
 
         jComboBox1.setModel(loadDegreeList());
@@ -505,19 +508,41 @@ public class GUIMain extends javax.swing.JFrame {
     private void showSuggestions(){
         jPanel3.removeAll();
         int num_courses_a_sem = (int)jSpinner1.getValue();      
-        jScrollPane1.setPreferredSize(new Dimension(1000,568));
+        jScrollPane1.setPreferredSize(new Dimension(1000,590));
         jPanel3.setLayout(new GridLayout(0, 2));
         int i = 0;
         //Add a panel per semester
         for(Course[] semester_list : session.getSuggestions()){
             i++;
-            JPanel sem_panel = new JPanel(new GridLayout(num_courses_a_sem, 0));
+            JPanel sem_panel = new JPanel(new GridBagLayout());
             sem_panel.setBorder(new TitledBorder("Semester " + i));
+            GridBagConstraints gbc = new GridBagConstraints();
             //Add all courses in course panel
+            int credits = 0;
+            int count = 0;
             for(Course c : semester_list){
-                JLabel courselbl = new JLabel(c == null ? "No Course" : c.toString());
-                sem_panel.add(courselbl);
+                JLabel courselbl = new JLabel(c == null ? "No Course" : c.getName() + ": " + c.getTitle());
+                credits += c == null ? 0 : c.getCredits();
+                JLabel creditslbl = new JLabel((c == null ? "" : c.getCredits()) + "");
+                gbc.gridx = count % 2 - 1;
+                gbc.gridy = count;
+                gbc.weightx = 0.9;
+                gbc.anchor = GridBagConstraints.LINE_START;
+                sem_panel.add(courselbl, gbc);
+                gbc.anchor = GridBagConstraints.CENTER;
+                gbc.weightx = 0.1;
+                gbc.gridx = count % 2 == 0 ? count % 2 + 1 : count % 2;
+                sem_panel.add(creditslbl, gbc);
+                count++;
             }
+            JLabel takespace = new JLabel();
+            gbc.gridx = 0;
+            gbc.gridy = count - 1;
+            sem_panel.add(takespace, gbc);
+            JLabel sem_cred = new JLabel("Credits: "+ credits);
+            gbc.gridx = 1;
+            gbc.gridy = count;
+            sem_panel.add(sem_cred, gbc);
             jPanel3.add(sem_panel);
         }
     }
