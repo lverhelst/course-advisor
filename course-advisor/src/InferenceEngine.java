@@ -309,10 +309,14 @@ public class InferenceEngine {
                              return this.stringCheck("FALSE" + remainder);
                         }
                     case "AND":
+                        try{
                         if((tokens[0].equals("TRUE") || getFacts().containsKey(tokens[0])) && getFacts().containsKey(tokens[2])){  
                             return this.stringCheck("TRUE" + remainder);
                         }else{
                             return this.stringCheck("FALSE" + remainder);
+                        }
+                        }catch(Exception e){
+                            System.out.println(e);
                         }
                     default:
                         return this.stringCheck("FALSE"); //This should never be executed
