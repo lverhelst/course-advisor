@@ -609,7 +609,17 @@ public class GUIMain extends javax.swing.JFrame {
 
             Course course = cl.get(value.toString());
             
-            c.setToolTipText(course.getName() + " - " + course.getTitle() + "\n" + course.getDescription());
+            String desc_in = course.getDescription() + " ";
+            String desc_out = "";
+            int i = 0;
+            
+            while(i + 80 < desc_in.length()) {                
+                desc_out += "<br>" + desc_in.substring(i, desc_in.indexOf(" ", i+80));                
+                i += Math.min(desc_in.indexOf(" ", i+80), desc_in.length());
+            }  
+                        
+            c.setToolTipText("<html><b>" + course.getName() + "</b> - " + course.getTitle() 
+                    + " (" + course.getCredits() + ")" + desc_out + "</html>");
             return c;
         }
     }
