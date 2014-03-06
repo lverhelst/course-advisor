@@ -1,4 +1,5 @@
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -13,7 +14,7 @@ public class Main {
         CourseList cl = new CourseList();
         RuleList rl = new RuleList();
         
-        if(cl.loadCourseList() && rl.loadRuleList("cpscrules.txt")){
+        if(cl.loadCourseList() && rl.loadRuleList(new File("cpscrules.txt"))){
             Course[] initialCourses = cl.get("CPSC100","CPSC141");
             ArrayList<String> interests = new ArrayList<String>(); 
             interests.add("CPSC");

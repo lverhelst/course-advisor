@@ -1,13 +1,16 @@
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -21,6 +24,7 @@ import javax.swing.table.TableColumn;
 public class GUIMain extends javax.swing.JFrame {
     private CourseList cl = new CourseList();
     private RuleList rl = new RuleList();
+    private File degree = new File("cpsc.degree");
     private InferenceEngine ie;
     private Session session;
     
@@ -29,7 +33,7 @@ public class GUIMain extends javax.swing.JFrame {
      */
     public GUIMain() { 
         cl.loadCourseList();
-        rl.loadRuleList("cpscrules.txt");
+        rl.loadRuleList(degree);
         initComponents();
         initTableModel();
         initRuleComponents();    
@@ -169,6 +173,24 @@ public class GUIMain extends javax.swing.JFrame {
     }
     
     /**
+     * Used to load the list of degrees that have rules
+     * @return A ComboBoxModel with all the selectable degrees
+     */
+    public ComboBoxModel loadDegreeList() {
+        DefaultComboBoxModel list = new DefaultComboBoxModel();
+        File root = new File(".");
+        
+        for(File file: root.listFiles()) {
+            if(file.isFile() && file.getName().endsWith(".degree")) {
+                String name = file.getName();
+                list.addElement(name.substring(0, name.length() - 7));
+            }
+        }
+        
+        return list;
+    }
+    
+    /**
      * Used to change the column widths and set the table settings
      */
     private void initTableModel() {
@@ -225,7 +247,12 @@ public class GUIMain extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CPSC" }));
+        jComboBox1.setModel(loadDegreeList());
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadDegreeRules(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         jLabel1.setText("Degree");
@@ -491,6 +518,13 @@ public class GUIMain extends javax.swing.JFrame {
         subjects.repaint();
     }//GEN-LAST:event_clearSubject
 
+    private void loadDegreeRules(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDegreeRules
+        JComboBox comboBox = (JComboBox)evt.getSource();
+        String name = comboBox.getModel().getSelectedItem().toString() + ".degree";
+        
+        degree = new File(name);
+    }//GEN-LAST:event_loadDegreeRules
+
     /**
      * @param args the command line arguments
      */
@@ -599,6 +633,9 @@ public class GUIMain extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Used to create tooltips based on courses for the cells in the table
+     */
     public class ToolTipCellRenderer extends DefaultTableCellRenderer {
     @Override
         public Component getTableCellRendererComponent (JTable table, Object value,
