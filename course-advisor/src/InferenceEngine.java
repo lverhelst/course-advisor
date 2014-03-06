@@ -129,12 +129,10 @@ public class InferenceEngine {
                 if(rule.check()) {  //
                 //if(rule.stringCheck(rule.prereqString)) {                  
                     String fire = rule.getAction();
-                    //skip 0, 1 and 3 credit courses
+                    //skip 0, 1 and 2 credit courses
                     if(courseList.get(fire).getCredits() < 3){
                         continue;
                     }
-                    
-                    
                     //ensure that 100 and 110 courses are not added to the same session
                     boolean special = false;
                     if(fire.endsWith("100")){
@@ -145,7 +143,7 @@ public class InferenceEngine {
                     }
                     //filter out specialized courses if requested
                     if(!include_specialized_topics){
-                        special = Integer.parseInt(fire.substring(fire.length() - 2, fire.length())) >= 90;
+                        special |= Integer.parseInt(fire.substring(fire.length() - 2, fire.length())) >= 90;
                     }
                     
                     if(!facts.containsKey(fire.toString()) && !special) {                
@@ -180,7 +178,7 @@ public class InferenceEngine {
         }
         //filter out specialized courses if requested
         if(!include_specialized_topics){
-            special = Integer.parseInt(course_name.substring(course_name.length() - 2, course_name.length())) >= 90;
+            special |= Integer.parseInt(course_name.substring(course_name.length() - 2, course_name.length())) >= 90;
         }
         if(!facts.containsKey(course_name) && !special){
             //Check if we can take the course

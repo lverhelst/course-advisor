@@ -147,6 +147,6 @@ public class Course {
     
     @Override
     public String toString(){
-        return getName()+ ": " + getTitle() + " " + getCredits() + ((taken) ? " (Taken)":"");
+        return getName()+ ": " + getTitle() + " (" + getCredits() + ")";
     }
 }
