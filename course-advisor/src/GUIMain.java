@@ -450,6 +450,7 @@ public class GUIMain extends javax.swing.JFrame {
         }
         //get interests by name
         ArrayList<String> interests = new ArrayList<String>();
+        
         jTextArea1.setText(jTextArea1.getText() + "\r\n\r\nUser has interest in the following degrees: ");
         
         for(int i = 0; i < subjects.getRowCount(); i++){
