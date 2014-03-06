@@ -15,8 +15,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.JViewport;
-import javax.swing.ScrollPaneConstants;
+import javax.swing.ToolTipManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -210,7 +209,7 @@ public class GUIMain extends javax.swing.JFrame {
                 
         col = takenCourses.getColumnModel().getColumn(1);
         col.setCellRenderer(new ToolTipCellRenderer());
-        
+        ToolTipManager.sharedInstance().setDismissDelay(60000);
     }
     
     
@@ -666,11 +665,30 @@ public class GUIMain extends javax.swing.JFrame {
             String desc_in = course.getDescription() + " ";
             String desc_out = "";
             int i = 0;
+            int j = 0;
+            boolean line_break = false;
             
+            while(i < desc_in.length()) {
+                if(line_break) {
+                    desc_out += "<br>" + desc_in.substring(j, i);
+                    j = i;
+                    line_break = false;
+                }
+                
+                if(i >= j + 80 && desc_in.charAt(i) == ' ') {
+                    line_break = true;
+                }
+                i++;
+            }
+            
+            if(j != i) {
+                desc_out += "<br>" + desc_in.substring(j, i-1);
+            }
+            /*
             while(i + 80 < desc_in.length()) {                
-                desc_out += "<br>" + desc_in.substring(i, desc_in.indexOf(" ", i+80));                
+                desc_out += "<br>" + desc_in.substring(i, desc_in.indexOf(" ", i+80));
                 i += Math.min(desc_in.indexOf(" ", i+80), desc_in.length());
-            }  
+            }  */
                         
             c.setToolTipText("<html><b>" + course.getName() + "</b> - " + course.getTitle() 
                     + " (" + course.getCredits() + ")" + desc_out + "</html>");
