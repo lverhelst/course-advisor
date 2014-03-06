@@ -1,14 +1,14 @@
-/**
- * @author Leon Verhelst and Emery Berg
- * This class is used to load classes and handle the structure of classes
- * This class acts as the knowledge base of the classes
- */
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * @author Leon Verhelst and Emery Berg
+ * This class is used to load classes and handle the structure of classes
+ * This class acts as the knowledge base of the classes
+ */
 public class CourseList {      
     private HashMap<String, Course> unbccourses;
     
@@ -82,36 +82,14 @@ public class CourseList {
                     }
                 }
                 unbccourses.put(component[0], course);
-                if(component[0].startsWith("CPSC")){
-                    //System.out.println(line);
-                }
-                
                 
                 line = br.readLine();
             }
-          /*
-            //add all the requirements to the courses            
-            for(String key :requirements.keySet()) {
-                course = unbccourses.get(key);
-                
-                //find and add the requiements for the current course
-                for(String reqkey: requirements.get(key)) {
-                    if(unbccourses.containsKey(reqkey)) {
-                        course.addPrereq(unbccourses.get(reqkey).getName());
-                    } else { //if course is missing fill in the blank
-                        reqkey = reqkey.replace("XX", "0");
-                        course = new Course(reqkey);
-                        unbccourses.put(reqkey, course);
-                        course.addPrereq(unbccourses.get(reqkey).getName());
-                    }
-                }
-            }
-           */
             
             //close connection  
             br.close();
         }catch(IOException | NumberFormatException e){
-            System.err.println(e.toString());
+            Printer.printError(e.toString());
             return false;
         }
         return true;

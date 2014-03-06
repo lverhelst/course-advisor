@@ -10,10 +10,8 @@ import java.util.HashMap;
  
  The inferDegreeRequirementsence engine is limited to rules that us a single premise, or a list of ANDed premises
  */
-
 public class InferenceEngine {
     private final int TOTAL_REQUIRED_CREDIT_HOURS = 120;
-    
     private boolean include_specialized_topics = false;
     
     //Example RULE: CPSC300 + 60CreditHours  => CPSC 400    p
@@ -61,7 +59,7 @@ public class InferenceEngine {
              }
              rules.add(new CourseRule(course.getName(), pres, course.preString));
         }
-        System.out.println("Loaded Rules");
+        Printer.print("Loaded Rules");
     }
     
     /**
@@ -76,7 +74,7 @@ public class InferenceEngine {
         while(session.credit_hours <= TOTAL_REQUIRED_CREDIT_HOURS && applied_a_rule){
             //BACKWARDS CHAINING!
             for(Rule rule : ruleList.getRuleSetArray()){
-                System.out.println("Applying " + rule.getType().toLowerCase() + " rule : " + rule.getName());
+                Printer.print("Applying " + rule.getType().toLowerCase() + " rule : " + rule.getName());
                 applied_a_rule = true;
                 //Completely apply each rule one at a time
                 while(applied_a_rule){
@@ -147,21 +145,19 @@ public class InferenceEngine {
                     }
                     
                     if(!facts.containsKey(fire.toString()) && !special) {                
-                      //  System.out.println("Adding non-priority course: " + fire.getValue());      
                         if(session.addCourse(courseList.get(fire).getAcademic_Year(), courseList.get(fire))){
                             getFacts().put(fire.toString(), fire);
                             applied_a_rule = true;
                         }
                     }else{
                         if(special)
-                            System.out.println("Course skipped: " + fire.toString());
+                            Printer.print("Course skipped: " + fire.toString());
                     }
                 }
             }
         }
         return session;
-    }
-    
+    }    
     
     private boolean tryApplyCourse(String course_name, String rule_type){
         //If we haven't already suggested this course
@@ -208,7 +204,7 @@ public class InferenceEngine {
             }
        }else{
              if(special)
-                System.out.println("Course skipped: " + course_name);
+                Printer.print("Course skipped: " + course_name);
         }
        return false;
     }
@@ -243,8 +239,7 @@ public class InferenceEngine {
         public String action;
         
         /**
-         * Default constructor used to define the action and premises to 
- trigger the action
+         * Default constructor used to define the action and premises to trigger the action
          * @param action the action to perform
          * @param premises which are needed to trigger
          */
@@ -279,6 +274,7 @@ public class InferenceEngine {
             
             return premise;
         }
+        
         /***
          * Recursively evaluates a boolean expression of courses (ex CPSC100ANDMATH100ORMATH105) 
          * @param prestring Expression to evaluate
@@ -316,7 +312,7 @@ public class InferenceEngine {
                             return this.stringCheck("FALSE" + remainder);
                         }
                         }catch(Exception e){
-                            System.out.println(e);
+                            Printer.printError(e.toString());
                         }
                     default:
                         return this.stringCheck("FALSE"); //This should never be executed
@@ -327,8 +323,6 @@ public class InferenceEngine {
             }
         }
         
-        
-        
         /**
          * Used to get the action of the rule
          * @return the action of the rule
@@ -337,6 +331,7 @@ public class InferenceEngine {
             return action;
         }
         
+        @Override
         public String toString(){
             String ret = prereqString + " ||||| ";
             for(String f : premises){

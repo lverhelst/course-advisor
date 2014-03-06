@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 /**
- * @author Emery
+ * @author Emery and Leon
  */
 public class GUIMain extends javax.swing.JFrame {
     private CourseList cl = new CourseList();
@@ -139,7 +139,10 @@ public class GUIMain extends javax.swing.JFrame {
         return model;
     }
 
-    
+    /**
+     * Used to load the courses for the course list
+     * @return the CheckBoxTableModel for displaying the list
+     */
     public CheckBoxTableModel loadCourseModel(){        
         String[] column_names = {"", "Course"};
         Object[][] data = null;
@@ -156,6 +159,10 @@ public class GUIMain extends javax.swing.JFrame {
         return new CheckBoxTableModel(column_names, data);
     }
     
+    /**
+     * Used to load the subjects for the subject list
+     * @return the CheckBoxTableModel for displaying the list
+     */
     public CheckBoxTableModel loadInterestModel(){
         String[] column_names = {"", "Degree"};
         Object[][] data = null;

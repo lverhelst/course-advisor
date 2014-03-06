@@ -56,7 +56,7 @@ public class RuleList {
             }
             br.close();
         }catch(IOException | NumberFormatException e){
-            System.err.println(e.toString());
+            Printer.printError(e.toString());
             return false;
         }
         return true;
@@ -171,7 +171,7 @@ public class RuleList {
                     }
                 }
             }
-            //System.out.println("CUBJECT " + "CREDITS: "+ credits + " NUMBER: " + number);
+            
             return credits >= number;
         }  
         

@@ -1,13 +1,14 @@
 import java.io.PrintWriter;
 
 /**
+ * Static class for printing to file/logs
  * @author Emery
  */
 public class Printer {
     private static PrintWriter printWriter;
-    private static boolean verbose;
-    private static boolean error;
-    private static boolean printFile;
+    private static boolean verbose = false;
+    private static boolean error = false;
+    private static boolean printFile = false;
     
     /**
      * Used to set the output device

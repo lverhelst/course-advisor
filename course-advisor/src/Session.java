@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 
 /**
@@ -27,7 +26,7 @@ public class Session {
         
         for(int i = 0; i < initCourses.length; ++i) {
                 
-                System.out.println("ADDING INITIAL COURSE: " +  initCourses[i] + " to: "+ (int)i/courses + "," +  i % courses);
+                Printer.print("ADDING INITIAL COURSE: " +  initCourses[i] + " to: "+ (int)i/courses + "," +  i % courses);
                 if(initCourses[i] != null){
                     semesters[(i/courses)][ i % courses] = initCourses[i];  
                     this.credit_hours += initCourses[i].getCredits();
@@ -63,7 +62,7 @@ public class Session {
     public boolean addCourse(int year, Course course){
         boolean placed = false;
         int semester = (year - 1) * 2; // 0-index the semester, set to years
-       // System.out.println(course.getName());
+       
         while(!placed){
            if(semester >= semesters.length)
                break;
@@ -72,20 +71,20 @@ public class Session {
                 if(semesters[semester][i] == null){
                    semesters[semester][i] = course;
                    credit_hours += course.getCredits();
-                   System.out.println(course.getName() + " placed successfully!");
+                   Printer.print(course.getName() + " placed successfully!");
                    return true;
                }else{
                    //if a prerequisite of this course is in the current semester, break (do not add)
                    if(course.getPrereqs().contains(semesters[semester][i].getName()))
                    {
-                      // System.out.println("INCREMENT SEMESTER");
+                       Printer.print("INCREMENT SEMESTER");
                        break;
                    }
                }
            } 
            semester++; 
         }
-        System.out.println(course.getName() + " could not be placed!");
+        Printer.print(course.getName() + " could not be placed!");
         return placed;
     }
     
