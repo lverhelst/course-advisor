@@ -51,6 +51,10 @@ public class Session {
         return taken.toArray(ret);
     }
     
+    public Course[][] getSuggestions(){
+        return this.semesters;
+    }
+    
     /**
      * Used to add a course to the session
      * @param year the suggested academic year for the course
