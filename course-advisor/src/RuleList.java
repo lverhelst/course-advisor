@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class RuleList {
       * @param filename a string of the filename
       * @return boolean value of the success of the loading
       */
-    public boolean loadRuleList(String filename){
+    public boolean loadRuleList(File filename){
         ruleset = new HashMap();
         rulesetArray = new ArrayList<>();
         BufferedReader br;
@@ -55,7 +56,7 @@ public class RuleList {
             }
             br.close();
         }catch(IOException | NumberFormatException e){
-            System.err.println(e.toString());
+            Printer.printError(e.toString());
             return false;
         }
         return true;
@@ -170,7 +171,7 @@ public class RuleList {
                     }
                 }
             }
-            //System.out.println("CUBJECT " + "CREDITS: "+ credits + " NUMBER: " + number);
+            
             return credits >= number;
         }  
         

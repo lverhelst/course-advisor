@@ -18,16 +18,12 @@ import java.util.logging.Logger;
  */
 public class BannerConnect {
     private String url = "https://pg-adm-formslb-01.unbc.ca";
-//    private String url = "https://pg-adm-formslb-01.unbc.ca/banprod/bwckctlg";
-//    private ArrayList<String> list;
     
-    public BannerConnect(){
-//        list = new ArrayList();
-    }
-    
+    /**
+     * Used to update the courselist using the captured html file
+    */
     public void update() {  
-        URL oracle = null;
-        File file = new File("courselist.html");
+        File file = new File("courselist.html"); //html captured from the website
         try {
             BufferedReader in = new BufferedReader(new FileReader(file));
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream("courselist.txt")));
@@ -35,9 +31,11 @@ public class BannerConnect {
             String inputLine = in.readLine();
             String[] lines;
             
+            //scan all lines
             while (inputLine != null) {
                 lines = inputLine.split(" ");
                 
+                //check if line has data we are interested in
                 if(lines.length > 2) {
                     if(lines[1].equals("CLASS=\"nttitle\"")) {
                         String address = lines[4].split("\"")[1].replace("amp;", "");
@@ -53,42 +51,13 @@ public class BannerConnect {
         } catch (IOException ex) {
             Logger.getLogger(BannerConnect.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        //Communication code not working due to generation of page
-            
-//        //get connection to website
-//        try {
-//            oracle = new URL(url);
-//        } catch (MalformedURLException e) {
-//            System.err.println("Failed to open URL " + e.toString());
-//            return;
-//        }
-//
-//        
-//        //pull content from site
-//        try {
-//            URLConnection test = oracle.openConnection();
-//            test.setDoOutput(true);
-//            test.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
-//            test.setRequestProperty("Accept","*/*");
-//            
-//            OutputStreamWriter out = new OutputStreamWriter(
-//                                         test.getOutputStream());
-//            out.write(".p_display_courses");
-//            out.close();
-//        
-//            BufferedReader in = new BufferedReader(
-//            new InputStreamReader(test.getInputStream()));
-//
-//            String inputLine;
-//            while ((inputLine = in.readLine()) != null)
-//                System.out.println(inputLine);
-//        in.close();
-//        } catch (IOException e) {
-//            System.err.println("Failed to retrieve course list " + e.toString());
-//        }
     }
     
+    /**
+     * gets the address and parses it to the output file
+     * @param address the address to parse the information out of
+     * @return a string of the output
+    */
     public String pullHTML(String address) {
         String output = "";
         
@@ -96,12 +65,13 @@ public class BannerConnect {
         try {
             banner = new URL(url + address);
         } catch (MalformedURLException e) {
-            System.err.println("Failed to open URL " + e.toString());
+            Printer.printError("Failed to open URL " + e.toString());
             return null;
         }
 
         String inputLine = null;
         String[] lines;
+        
         //pull content from site
         try {
             URLConnection test = banner.openConnection();
@@ -109,16 +79,20 @@ public class BannerConnect {
             test.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
             test.setRequestProperty("Accept","*/*");
                    
-            BufferedReader in = new BufferedReader(
-            new InputStreamReader(test.getInputStream()));
-            
+            BufferedReader in = new BufferedReader(new InputStreamReader(test.getInputStream()));
+        
+            //runs through all lines
             while ((inputLine = in.readLine()) != null) { 
                 
+                //check if line has a length which is of interest
                 if(inputLine.length() > 21) {
                     int first = inputLine.indexOf('"') + 1;
                     
+                    //check if the line has " meaning we are interested in it
                     if(first > 0) {
                         String temp = inputLine.substring(first, inputLine.indexOf('"', first + 1));   
+                        
+                        //using the value grabbed to decide what action to take
                         switch(temp) {
                             case "nttitle":
                                 temp = inputLine.substring(inputLine.indexOf('>') + 1, inputLine.indexOf('<',20));
@@ -132,6 +106,8 @@ public class BannerConnect {
                                 break;
                             case "fieldlabeltext":
                                 temp = inputLine.substring(inputLine.indexOf('>') + 1, inputLine.indexOf('<',20));
+                                
+                                //parses the line differently in the case of credits and prereqs
                                 switch(temp) {
                                     case "Credits:":
                                         temp = inputLine.substring(inputLine.lastIndexOf('>') + 1);
@@ -168,7 +144,7 @@ public class BannerConnect {
             }
         in.close();
         } catch (IOException e) {
-            System.err.println("Failed to retrieve course list " + e.toString());
+            Printer.printError("Failed to retrieve course list " + e.toString());
         }
         
         return output;

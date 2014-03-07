@@ -5,10 +5,14 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JComboBox;
+import javax.swing.ToolTipManager;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,11 +23,12 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 /**
- * @author Emery
+ * @author Emery and Leon
  */
 public class GUIMain extends javax.swing.JFrame {
     private CourseList cl = new CourseList();
     private RuleList rl = new RuleList();
+    private File degree = new File("cpsc.degree");
     private InferenceEngine ie;
     private Session session;
     
@@ -32,7 +37,7 @@ public class GUIMain extends javax.swing.JFrame {
      */
     public GUIMain() { 
         cl.loadCourseList();
-        rl.loadRuleList("cpscrules.txt");
+        rl.loadRuleList(degree);
         initComponents();
         initTableModel();
         initRuleComponents();    
@@ -134,7 +139,10 @@ public class GUIMain extends javax.swing.JFrame {
         return model;
     }
 
-    
+    /**
+     * Used to load the courses for the course list
+     * @return the CheckBoxTableModel for displaying the list
+     */
     public CheckBoxTableModel loadCourseModel(){        
         String[] column_names = {"", "Course"};
         Object[][] data = null;
@@ -151,6 +159,10 @@ public class GUIMain extends javax.swing.JFrame {
         return new CheckBoxTableModel(column_names, data);
     }
     
+    /**
+     * Used to load the subjects for the subject list
+     * @return the CheckBoxTableModel for displaying the list
+     */
     public CheckBoxTableModel loadInterestModel(){
         String[] column_names = {"", "Degree"};
         Object[][] data = null;
@@ -173,6 +185,24 @@ public class GUIMain extends javax.swing.JFrame {
     }
     
     /**
+     * Used to load the list of degrees that have rules
+     * @return A ComboBoxModel with all the selectable degrees
+     */
+    public ComboBoxModel loadDegreeList() {
+        DefaultComboBoxModel list = new DefaultComboBoxModel();
+        File root = new File(".");
+        
+        for(File file: root.listFiles()) {
+            if(file.isFile() && file.getName().endsWith(".degree")) {
+                String name = file.getName();
+                list.addElement(name.substring(0, name.length() - 7));
+            }
+        }
+        
+        return list;
+    }
+    
+    /**
      * Used to change the column widths and set the table settings
      */
     private void initTableModel() {
@@ -188,7 +218,7 @@ public class GUIMain extends javax.swing.JFrame {
                 
         col = takenCourses.getColumnModel().getColumn(1);
         col.setCellRenderer(new ToolTipCellRenderer());
-        
+        ToolTipManager.sharedInstance().setDismissDelay(60000);
     }
     
     
@@ -230,7 +260,12 @@ public class GUIMain extends javax.swing.JFrame {
         setBackground(new java.awt.Color(204, 255, 255));
         setResizable(false);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "CPSC" }));
+        jComboBox1.setModel(loadDegreeList());
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadDegreeRules(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         jLabel1.setText("Degree");
@@ -533,6 +568,13 @@ public class GUIMain extends javax.swing.JFrame {
         subjects.repaint();
     }//GEN-LAST:event_clearSubject
 
+    private void loadDegreeRules(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDegreeRules
+        JComboBox comboBox = (JComboBox)evt.getSource();
+        String name = comboBox.getModel().getSelectedItem().toString() + ".degree";
+        
+        degree = new File(name);
+    }//GEN-LAST:event_loadDegreeRules
+
     /**
      * @param args the command line arguments
      */
@@ -560,6 +602,11 @@ public class GUIMain extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        for(String arg: args) {
+            if(arg.equals("-verbose"))
+                Printer.verbose(true);
+        }
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -640,6 +687,9 @@ public class GUIMain extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Used to create tooltips based on courses for the cells in the table
+     */
     public class ToolTipCellRenderer extends DefaultTableCellRenderer {
     @Override
         public Component getTableCellRendererComponent (JTable table, Object value,
@@ -652,11 +702,25 @@ public class GUIMain extends javax.swing.JFrame {
             String desc_in = course.getDescription() + " ";
             String desc_out = "";
             int i = 0;
+            int j = 0;
+            boolean line_break = false;
             
-            while(i + 80 < desc_in.length()) {                
-                desc_out += "<br>" + desc_in.substring(i, desc_in.indexOf(" ", i+80));                
-                i += Math.min(desc_in.indexOf(" ", i+80), desc_in.length());
-            }  
+            while(i < desc_in.length()) {
+                if(line_break) {
+                    desc_out += "<br>" + desc_in.substring(j, i);
+                    j = i;
+                    line_break = false;
+                }
+                
+                if(i >= j + 80 && desc_in.charAt(i) == ' ') {
+                    line_break = true;
+                }
+                i++;
+            }
+            
+            if(j != i) {
+                desc_out += "<br>" + desc_in.substring(j, i-1);
+            }
                         
             c.setToolTipText("<html><b>" + course.getName() + "</b> - " + course.getTitle() 
                     + " (" + course.getCredits() + ")" + desc_out + "</html>");
