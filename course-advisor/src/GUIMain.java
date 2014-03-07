@@ -602,6 +602,11 @@ public class GUIMain extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        for(String arg: args) {
+            if(arg.equals("-verbose"))
+                Printer.verbose(true);
+        }
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
