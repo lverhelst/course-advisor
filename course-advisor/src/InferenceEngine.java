@@ -4,11 +4,10 @@ import java.util.HashMap;
 
 /**
  * @author Leon Verhelst and Emery Berg
- An Inference Engine applies rules to facts stored in the knowledge base
- Our inferDegreeRequirementsence engine uses forward-chaining, that is, it starts from the given facts 
- and applies its rules, asserts new facts and re-runs until it has reached a goal.
- 
- The inferDegreeRequirementsence engine is limited to rules that us a single premise, or a list of ANDed premises
+    An Inference Engine applies rules to facts stored in the knowledge base
+    Our inference engine uses forward-chaining, that is, it starts from the given facts 
+    and applies its rules, asserts new facts and re-runs until it has reached a goal.
+    The inference engine is limited to rules that us a single premise, or a list of ANDed premises
  */
 public class InferenceEngine {
     private final int TOTAL_REQUIRED_CREDIT_HOURS = 120;
@@ -108,7 +107,11 @@ public class InferenceEngine {
         }
         return session;
     }
-    
+    /**
+     * Infers elective courses
+     * Takes note of which courses the user has selected an interest in
+     * @return the Session with Electives chosen
+     */
     public Session inferElectives(){
         boolean applied_a_rule = true; //TODO: change to TRUE to enable electives!
         while((session.credit_hours <= TOTAL_REQUIRED_CREDIT_HOURS) && applied_a_rule){
@@ -158,7 +161,14 @@ public class InferenceEngine {
         }
         return session;
     }    
-    
+    /**
+     * FORWARD CHAINING
+     * Attempts to apply a course to facts, ensures that the course satisfies the prerequisites
+     * Also, the course must satisfy the custom conditions as set by the user
+     * @param course_name The name of the course to be added
+     * @param rule_type The name of the rule attempting to add the course
+     * @return whether or not the course satisfied enough requirements to be added to the Session
+     */
     private boolean tryApplyCourse(String course_name, String rule_type){
         //If we haven't already suggested this course
         //skip 0, 1 and 3 credit courses

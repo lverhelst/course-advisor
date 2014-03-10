@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
 /**
+ * This class is used to facilitate user interaction with our Knowledge Based Systems
  * @author Emery and Leon
  */
 public class GUIMain extends javax.swing.JFrame {
@@ -476,7 +477,10 @@ public class GUIMain extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+/**
+ * the GO! Button, applies the options and initial facts and runs the inference engine
+ * @param evt 
+ */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //RUN AN INFERENCE!!
         
@@ -531,7 +535,9 @@ public class GUIMain extends javax.swing.JFrame {
         //Update ScoreCard
         setRulesSatisfied();
     }//GEN-LAST:event_jButton1ActionPerformed
-
+    /**
+     * Update the JPANEL3 to show the list of courses per semester
+     */
     private void showSuggestions(){
         jPanel3.removeAll();
         int num_courses_a_sem = (int)jSpinner1.getValue();      
@@ -573,21 +579,30 @@ public class GUIMain extends javax.swing.JFrame {
             jPanel3.add(sem_panel);
         }
     }
-    
+    /**
+     * Clears taken list
+     * @param evt 
+     */
     private void clearTaken(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearTaken
         for(int i = 0; i < takenCourses.getRowCount(); i++){            
             takenCourses.setValueAt(false, i, 0);
         }
         takenCourses.repaint();
     }//GEN-LAST:event_clearTaken
-
+    /**
+     * Clears interests list
+     * @param evt 
+     */
     private void clearSubject(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearSubject
         for(int i = 0; i < subjects.getRowCount(); i++){            
             subjects.setValueAt(false, i, 0);
         }
         subjects.repaint();
     }//GEN-LAST:event_clearSubject
-
+    /**
+     * Load Degree rules
+     * @param evt 
+     */
     private void loadDegreeRules(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadDegreeRules
         JComboBox comboBox = (JComboBox)evt.getSource();
         String name = comboBox.getModel().getSelectedItem().toString() + ".degree";
@@ -662,6 +677,9 @@ public class GUIMain extends javax.swing.JFrame {
     private javax.swing.JTable takenCourses;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Class used to display checkboxes on a table
+     */
     public class CheckBoxTableModel extends AbstractTableModel {
         Object[][] data;
         String[] cols;
