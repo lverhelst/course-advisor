@@ -14,7 +14,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.ToolTipManager;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
@@ -36,8 +38,18 @@ public class GUIMain extends javax.swing.JFrame {
      * Creates new form NewJFrame
      */
     public GUIMain() { 
-        cl.loadCourseList();
-        rl.loadRuleList(degree);
+        if(!cl.loadCourseList()){ 
+            JOptionPane.showMessageDialog(new JFrame(),
+                    "courseslist.txt is missing!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        if(!rl.loadRuleList(degree)){
+            JOptionPane.showMessageDialog(new JFrame(),
+                    "*.DEGREE file(s) missing!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);    
+        }
         initComponents();
         initTableModel();
         initRuleComponents();    
