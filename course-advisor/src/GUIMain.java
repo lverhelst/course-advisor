@@ -360,10 +360,11 @@ public class GUIMain extends javax.swing.JFrame {
         jScrollPane1.setPreferredSize(new java.awt.Dimension(1080, 500));
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Suggestions"));
-        jPanel3.setMaximumSize(null);
-        jPanel3.setMinimumSize(null);
+        jPanel3.setToolTipText("");
+        jPanel3.setMaximumSize(new java.awt.Dimension(32675, 32675));
         jPanel3.setName(""); // NOI18N
-        jPanel3.setPreferredSize(new java.awt.Dimension(20, 538));
+        jPanel3.setOpaque(false);
+        jPanel3.setPreferredSize(null);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -373,10 +374,11 @@ public class GUIMain extends javax.swing.JFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 515, Short.MAX_VALUE)
+            .addGap(0, 545, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(jPanel3);
+        jPanel3.getAccessibleContext().setAccessibleDescription("");
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Scorecard"));
         jPanel2.setLayout(new java.awt.GridLayout(getRuleRows(), 1));
@@ -533,7 +535,7 @@ public class GUIMain extends javax.swing.JFrame {
     private void showSuggestions(){
         jPanel3.removeAll();
         int num_courses_a_sem = (int)jSpinner1.getValue();      
-        jScrollPane1.setPreferredSize(new Dimension(700,520));
+        jScrollPane1.setPreferredSize(new Dimension(1000,1000));
         jPanel3.setLayout(new GridLayout(0, 2));
         int i = 0;
         //Add a panel per semester
