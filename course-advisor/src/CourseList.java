@@ -67,29 +67,29 @@ public class CourseList {
                     {
                         requirements.put(component[0], subpart);
                         String prestring = "";
+                        int length = 0;
                         for(String s : subpart){
                             //Filter out pre-university requirements (Any 115 course)
                             if(!s.endsWith("115")){
                                 if(!s.equals("AND") && !s.equals("OR"))
                                     course.addPrereq(s);
                                 prestring+=s + ",";
-                            }else{
-                                //remove token that is dependant on 115, to not throw errors
-                                //otherwise prestring can be CPSC100,OR, which is not valid
-                                if(prestring.length() > 0 &&  prestring.contains(",")){
-                                    String[] pre = prestring.split(",");
-                                    String temp = "";
-                                    for(int i = 0; i < pre.length - 1; i++){
-                                        temp += pre[i] + (i == pre.length - 2 ? "" : ",");
-                                    }
-                                    prestring = temp;
+                            } else if(prestring.length() > 8) {
+                                length = prestring.length();
+                                String temp = prestring.substring(length - 4);
+                                
+                                if(temp.equals("AND,")) {
+                                    prestring = prestring.substring(0, length - 4);
+                                } else {
+                                    prestring = prestring.substring(0, length - 3);                                    
                                 }
-                            } 
+                            }
                         }
+                        
                         if(prestring.length() > 2)
                             course.preString = prestring.substring(0, prestring.length() - 1);
                         else
-                            course.preString = "";
+                            course.preString = "";                        
                     }
                 }
                 unbccourses.put(component[0], course);
