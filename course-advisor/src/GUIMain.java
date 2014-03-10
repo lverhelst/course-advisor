@@ -45,6 +45,7 @@ public class GUIMain extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
         if(!rl.loadRuleList(degree)){
+               while(true)
             JOptionPane.showMessageDialog(new JFrame(),
                     "*.DEGREE file(s) missing!",
                     "Error",
