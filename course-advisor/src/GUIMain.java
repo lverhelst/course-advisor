@@ -38,24 +38,29 @@ public class GUIMain extends javax.swing.JFrame {
      * Creates new form NewJFrame
      */
     public GUIMain() { 
+        boolean haserror = false;        
         if(!cl.loadCourseList()){ 
             JOptionPane.showMessageDialog(new JFrame(),
                     "courseslist.txt is missing!",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
+            haserror = true;
         }
         if(!rl.loadRuleList(degree)){
-               while(true)
-            JOptionPane.showMessageDialog(new JFrame(),
-                    "*.DEGREE file(s) missing!",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);    
+               JOptionPane.showMessageDialog(new JFrame(),
+                        "*.DEGREE file(s) missing!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);   
+               haserror = true;
         }
+        if(haserror)
+            System.exit(0);
         initComponents();
         initTableModel();
         initRuleComponents();    
         this.setResizable(false);
         this.setIconImage(new ImageIcon("Image/472.png").getImage());
+        
     }
     
     /**
