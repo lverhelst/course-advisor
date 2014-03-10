@@ -73,6 +73,17 @@ public class CourseList {
                                 if(!s.equals("AND") && !s.equals("OR"))
                                     course.addPrereq(s);
                                 prestring+=s + ",";
+                            }else{
+                                //remove token that is dependant on 115, to not throw errors
+                                //otherwise prestring can be CPSC100,OR, which is not valid
+                                if(prestring.length() > 0 &&  prestring.contains(",")){
+                                    String[] pre = prestring.split(",");
+                                    String temp = "";
+                                    for(int i = 0; i < pre.length - 1; i++){
+                                        temp += pre[i] + (i == pre.length - 2 ? "" : ",");
+                                    }
+                                    prestring = temp;
+                                }
                             } 
                         }
                         if(prestring.length() > 2)
