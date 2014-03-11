@@ -544,6 +544,14 @@ public class GUIMain extends javax.swing.JFrame {
         jScrollPane1.setPreferredSize(new Dimension(1000,1000));
         jPanel3.setLayout(new GridLayout(0, 2));
         int i = 0;
+        ArrayList<String> taken = new ArrayList<String>();
+        for(int j = 0; j < takenCourses.getRowCount(); j++){
+            //if selected
+            if((Boolean)takenCourses.getValueAt(j, 0)){
+                
+                taken.add((String)takenCourses.getValueAt(j,1));
+            }
+        }
         //Add a panel per semester
         for(Course[] semester_list : session.getSuggestions()){
             i++;
@@ -553,6 +561,8 @@ public class GUIMain extends javax.swing.JFrame {
             //Add all courses in course panel
             int credits = 0;
             int count = 0;
+            
+            
             for(Course c : semester_list){
                 JLabel courselbl = new JLabel(c == null ? "No Course" : c.getName() + ": " + c.getTitle());
                 credits += c == null ? 0 : c.getCredits();
@@ -561,6 +571,12 @@ public class GUIMain extends javax.swing.JFrame {
                 gbc.gridy = count;
                 gbc.weightx = 0.9;
                 gbc.anchor = GridBagConstraints.LINE_START;
+                
+                if(c != null && taken.contains(c.getName())){
+                    creditslbl.setForeground(new Color(34,139,34,255));
+                    courselbl.setForeground(new Color(34,139,34,255));
+                }
+                
                 sem_panel.add(courselbl, gbc);
                 gbc.anchor = GridBagConstraints.CENTER;
                 gbc.weightx = 0.1;
